@@ -1,0 +1,20 @@
+.scrolling-wrapper-flexbox {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+}
+.card {
+  flex: 0 0 auto;
+}
+
+.button{
+  border: none;
+  width: 45%;
+  background-color: blue;
+  border-radius: 10px;
+  color: white;
+  padding: 20px;
+  margin: 10px 0;
+}

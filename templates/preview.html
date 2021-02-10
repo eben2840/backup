@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <h4 style="margin: 0;">{{item.name}}</h4>
+    <h6 class="text-muted" >By: Nana Kweku Adumatta</h6>
+  
+        <img style="width: 100%;" src="../static/items/{{item.image}}">
+     
+
+<div style="display: flex; justify-content: space-between;">
+    <button class="button">Call This Vendor</button>
+    <button class="button">Call This Vendor</button>
+</div>
+    <h4>Item Description</h4>
+    <h6>{{item.description}}</h6>
+        <div style="display: flex;">
+            <h6>Price: {{item.price}}</h6>
+            <button class="button"> Contact Seller</button>
+        </div>
+</div>
+{% endblock %}
