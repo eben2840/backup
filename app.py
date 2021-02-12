@@ -138,7 +138,9 @@ def login():
             login_user(user)
             print ("Logged in:" + user.username + " " + user.phone)
             print(form.password.data)
-        return redirect(url_for('index'))
+            return redirect(url_for('index'))
+        else:
+            flash(f'Incorrect details, please try again', 'danger')
     return render_template('login.html', form=form)
 
 if __name__ == '__main__':
