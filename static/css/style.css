@@ -1,8 +1,32 @@
+body{
+  font-family: 'Poppins', sans-serif;
+}
+
 .scrolling-wrapper-flexbox {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+
+}
+
+.options-button{
+  border: none;
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  border :2px solid rgba(0, 0, 0, 0.205);
+  color: rgba(0, 0, 0, 0.486);
+  font-weight: bold;
+  padding: 20px;
+  margin: 10px 0;
+  text-align: left;
+}
+
+.flow{
+  display: flex;
+  justify-content: space-between;
+ 
 
 }
 .card {
@@ -17,4 +41,36 @@
   color: white;
   padding: 20px;
   margin: 10px 0;
+}
+
+.login-button{
+  border: none;
+  width: 100%;
+  background-color: blue;
+  border-radius: 10px;
+  color: white;
+  padding: 10px;
+  margin: 10px 0;
+
+}
+
+.logout{
+  border: none;
+  width: 45%;
+  background-color: red;
+  border-radius: 10px;
+  color: white;
+  padding: 20px;
+  margin: 10px 0;
+}
+
+.space{
+  padding: 40px;
+}
+
+.landing{
+  width: 100vw;
+  height: 50vh;
+  background-color: blue;
+  background-image: url(../img/f683689acb8f3382022a27ceb5f66b3d.jpg);
 }

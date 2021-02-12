@@ -2,21 +2,29 @@
 
 {% block body %}
 <div class="container">
-    <h4 style="margin: 0;">{{item.name}}</h4>
-    <h6 class="text-muted" >By: Nana Kweku Adumatta</h6>
-  
-        <img style="width: 100%;" src="../static/items/{{item.image}}">
+    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <h4 style="margin: 0;">{{item.name}}</h4>
+    </div>
+    <h6 class="text-muted" >@{{vendorname}}</h6>
+    <img style="width: 100%;" src="../static/items/{{item.image}}">
      
-
 <div style="display: flex; justify-content: space-between;">
-    <button class="button">Call This Vendor</button>
-    <button class="button">Call This Vendor</button>
+    <h1 class="text-muted">Ghc {{item.price}}</h1>
+    <i class="far fa-bookmark fa-2x"></i>
 </div>
-    <h4>Item Description</h4>
+
+    <h6>Negotiable</h6>
+    <!-- <hr> -->
+
+    <h6 class="text-muted">Item Description</h6>
     <h6>{{item.description}}</h6>
-        <div style="display: flex;">
-            <h6>Price: {{item.price}}</h6>
-            <button class="button"> Contact Seller</button>
-        </div>
+    <hr>
+    <div style="display: flex; justify-content: space-between;">
+        <button class="button"><a style="text-decoration: none; color: white;" href="tel:{{vendor.phone}}"><i class="fas fa-phone-alt"></i> Call Vendor </a></button>
+        <button class="button"><i class="fas fa-bookmark"></i> Bookmark item</button>
+    </div>
+    <hr>
+        <h6 class="text-muted">Reviews</h6>
+        <h6 style="text-align:center; margin: auto;">*Reviews are not available at the moment*</h6>
 </div>
 {% endblock %}
