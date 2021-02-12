@@ -14,6 +14,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
 
+
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -54,11 +55,26 @@ def save_picture(form_picture):
     return picture_fn
 
 
-@app.route('/', methods=['POST','GET'])
+
+@app.route('/search')
+def search():
+    items = Item.query.all()
+    # totalitems = Item.query.all().count()
+    results = []
+    # for i in items:
+        # words = i.split()
+        # for word in splits:
+            # print(word)
+
+    return render_template('results.html', items = items, search = 'iphone')
+
+
+@app.route('/start', methods=['POST','GET'])
 def index():
     items = Item.query.order_by(Item.id.desc()).all()
     user = current_user
-    return render_template('index.html', items = items)
+    home = 'home'
+    return render_template('index.html', items = items, home=home)
 
 
 @app.route('/preview/<int:itemid>')
@@ -111,7 +127,7 @@ def allusers():
     allusers = User.query.all()
     return render_template('allusers.html', allusers=allusers)
 
-@app.route('/login',methods=['POST','GET'])
+@app.route('/',methods=['POST','GET'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():

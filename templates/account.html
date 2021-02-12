@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>@{{user.username}}</h1>
-<h4>{{user.phone}}</h4>
-
 <div class="container">
+<h1>{{user.username}}</h1>
+<h4 class="text-muted">{{user.phone}}</h4>
+
     <div class="row">
         <a href="{{url_for('additem')}}">
             <button class="options-button"> <i class="fas fa-tags"></i> Sell an Item</button>
@@ -17,6 +17,17 @@
         </a>
     </div>
 
+    <div class="row">
+        <a href="{{url_for('additem')}}">
+            <button class="options-button"> <i class="far fa-bookmark"></i> Bookmarked Items</button>
+        </a>
+    </div>
+
+     <div class="row">
+        <a href="{{url_for('additem')}}">
+            <button class="options-button"> <i class="fas fa-heart"></i> Favourites</button>
+        </a>
+    </div>
     <!-- <div class="row">
         <div class="flow">
            <h6> <i class="fab fa-ello"></i> My Posts</h6>
