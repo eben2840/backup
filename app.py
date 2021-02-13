@@ -8,7 +8,7 @@ import os
 from flask_login import LoginManager
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)

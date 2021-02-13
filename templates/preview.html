@@ -6,7 +6,9 @@
         <h4 style="margin: 0;">{{item.name}}</h4>
     </div>
     <h6 class="text-muted" >@{{vendorname}}</h6>
-    <img style="width: 100%;margin-bottom: 10px;" src="../static/items/{{item.image}}">
+    <div style="width: 100vw; height: 80vh; overflow: hidden;">
+        <img style="width: 100%;margin-bottom: 10px; object-fit: cover;" src="../static/items/{{item.image}}">
+    </div>
      
 <div style="display: flex; justify-content: space-between;">
     <h1 class="text-muted">Ghc {{item.price}}</h1>
