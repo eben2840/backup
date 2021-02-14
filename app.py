@@ -72,7 +72,7 @@ def search():
     return render_template('results.html', items = items, search = 'iPhone')
 
 
-@app.route('/start', methods=['POST','GET'])
+@app.route('/', methods=['POST','GET'])
 def index():
     items = Item.query.order_by(Item.id.desc()).all()
     user = current_user
@@ -138,7 +138,7 @@ def allusers():
     allusers = User.query.all()
     return render_template('allusers.html', allusers=allusers)
 
-@app.route('/',methods=['POST','GET'])
+@app.route('/login',methods=['POST','GET'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -162,7 +162,7 @@ def bookmarks():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('/'))
+    return redirect(url_for('/login'))
 
 @app.route('/myitems')
 def myitems():
