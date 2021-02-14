@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, flash, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, ItemForm, LoginForm
 from flask_login import UserMixin, login_user, current_user, logout_user
+import pickle5 as pickle
 import secrets
 import os
 
