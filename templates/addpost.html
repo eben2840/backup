@@ -30,6 +30,16 @@
               {% endfor %}
             {% endif%}
           </div>
+
+          <div class="form-group">
+            {{ form.other_pictures.label }}
+            {{ form.other_pictures(class="form-control-file")}}
+              {% if form.picture.errors %}
+                {% for error in form.picture.errors %}
+                <span class="text-danger">{{error}}</span></br>
+              {% endfor %}
+            {% endif%}
+          </div>
           <div class="form-group">
             {{form.submit}}
         </div>

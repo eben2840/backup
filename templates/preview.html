@@ -6,8 +6,8 @@
         <h4 style="margin: 0;">{{item.name}}</h4>
     </div>
     <h6 class="text-muted" >@{{vendorname}}</h6>
-    <div style="width: 100vw; height: 80vh; overflow: hidden;">
-        <img style="width: 100%;margin-bottom: 10px; object-fit: cover;" src="../static/items/{{item.image}}">
+    <div style="width: 80vw; height: 50vh; margin: auto; overflow: hidden; text-align: center;">
+        <img style="height: 100%; margin-bottom: 10px; margin: auto;" src="../static/items/{{item.image}}">
     </div>
      
 <div style="display: flex; justify-content: space-between;">
@@ -28,5 +28,11 @@
     <hr>
         <h6 class="text-muted">Reviews</h6>
         <h6 style="text-align:center; margin: auto;">*Reviews are not available at the moment*</h6>
+
+        <div style="display:flex;">
+            {% for picture in images %}
+            <img width="10%" src="../static/items/{{picture}}">
+            {% endfor %}
+        </div>
 </div>
 {% endblock %}

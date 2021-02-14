@@ -5,21 +5,21 @@
 <div class="container">
 
 
-<form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; margin-top: 20px;" action="/search">
-    <input class="form-control" style="width:85%; padding: 20px;" type="search" placeholder="Search" aria-label="Search">
+<form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="/search" method="POST">
+    <input class="form-control" style="width:85%; padding: 20px;" type="search" name="q" placeholder="Search for a keyword" aria-label="Search">
     <button style="width: 15%; background-color: blue;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
   </form>
-
+ 
   <h4>Trending Ads</h4>
   
   <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
 
     {% for item in items %}
     
-    <div class="card" style="width: 48%; margin-bottom: 10px; border: 1px solid rgba(0, 0, 0, 0.411); border-radius: 10px;">
+    <div class="card" style="width: 30; margin-bottom: 10px; border: 1px solid rgba(0, 0, 0, 0.411); border-radius: 10px;">
         <a style="text-decoration: none;" href="{{url_for('preview', itemid=item.id)}}">
-          <div >
-            <img style="width: 100%; border-radius: 10px;"  src="../static/items/{{item.image}}">
+          <div style="width: 40vw; height: 40vh; text-align: center; overflow: hidden; ">
+            <img style="width: 40vw; height: 40vh;  border-radius: 10px; object-fit: cover;"  src="../static/items/{{item.image}}">
           </div>
             <div style="background-color: aliceblue; padding: 10px; border-radius: 0 0 10px 10px;">  
               <h6 style="color: black;" >{{item.name}}</h6>

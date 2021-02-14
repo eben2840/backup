@@ -26,7 +26,7 @@
       {% if home == 'home' %}
       <a class="navbar-brand"  style="color: white; " href="{{ url_for('index')}}"> uni-trade</a>
       {% else %}
-      <i class="fas fa-angle-left" style="margin-right: 10px;"></i><a class="navbar-brand"  style="color: white; " href="{{ url_for('index')}}">uni-trade</a>
+      <i class="fas fa-angle-left" style="margin-right: 10px;" onclick="window.history.back()"></i><a class="navbar-brand"  style="color: white; " href="{{ url_for('index')}}">uni-trade</a>
       {% endif %}
       <a style="text-decoration: none; color: white;" href="{{url_for('account')}}">
         <i class="fas fa-user-circle fa-2x"></i>
