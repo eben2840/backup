@@ -16,7 +16,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
 
-
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -95,6 +94,7 @@ def additem():
     form = ItemForm()
     if form.validate_on_submit():
         pic = 'default.png'
+        pictures = 'default.png'
         if form.picture.data:
             print('YO!!!!!!!!! IT IS OVER HERE!!!')
             pic = save_picture(form.picture.data)
@@ -163,7 +163,7 @@ def bookmarks():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('/login'))
+    return redirect(url_for('login'))
 
 @app.route('/myitems')
 def myitems():
@@ -171,6 +171,33 @@ def myitems():
     print(items)
     user = current_user
     return render_template('myitems.html' ,items = items, user=user)
+
+@app.route('/update/<string:itemid>', methods=['POST','GET'])
+def update(itemid):
+    form = ItemForm()
+    item = Item.query.filter_by(id = itemid).first()
+    update = True
+    print(item)
+    if request.method == 'GET':
+        form.name.data = item.name
+        form.price.data = item.price
+        form.description.data = item.description
+        form.picture.data = item.image
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            item = Item(name = form.name.data, description = form.description.data, price = form.price.data)
+            db.session.commit()
+    return render_template('addpost.html', form=form, item=item, update=update)
+
+@app.route('/delete/<string:itemid>', methods=['POST','GET'])
+def delete(itemid):
+    Item.query.filter_by(id = itemid).delete()
+    db.session.commit()
+    return redirect(url_for('myitems'))
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

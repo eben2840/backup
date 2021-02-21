@@ -19,11 +19,11 @@
         </div>
         <div class="form-group">
             {{ form.description.label}}
-            {{ form.description(class="form-control")}}
+            {{ form.description(class="form-control", cols="35", rows="7")}}
         </div>
         <div class="form-group">
             {{ form.picture.label }}
-            {{ form.picture(class="form-control-file")}}
+            {{ form.picture(class="form-control")}}
               {% if form.picture.errors %}
                 {% for error in form.picture.errors %}
                 <span class="text-danger">{{error}}</span></br>
@@ -31,19 +31,29 @@
             {% endif%}
           </div>
 
-          <div class="form-group">
+          <!-- <div class="form-group">
             {{ form.other_pictures.label }}
-            {{ form.other_pictures(class="form-control-file")}}
+            {{ form.other_pictures(class="form-control")}}
               {% if form.picture.errors %}
                 {% for error in form.picture.errors %}
                 <span class="text-danger">{{error}}</span></br>
               {% endfor %}
             {% endif%}
-          </div>
-          <div class="form-group">
-            {{form.submit}}
+          </div> -->
+          <div style="text-align: center;" class="form-group">
+            {{form.submit (class="button")}}
         </div>
     </form>
+    {% if update %}
+    <a href="{{ url_for('delete', itemid=item.id)}}">
+    <div style="text-align: center;">
+      <button class="button" style="background-color: red; color: white;">
+        Delete Item
+      </button>
+    </div>
+  </a>
+  {% endif %}
+
 </div>
 
 

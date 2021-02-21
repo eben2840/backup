@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block body %}
+
+{% if current_user.is_authenticated %}
 <div class="container">
 <h1>{{user.username}}</h1>
 <h4 class="text-muted">{{user.phone}}</h4>
@@ -37,6 +39,17 @@
 </div>
 
 <div style="text-align: center;">
-    <button class="logout">Logout</button>
+    <a href="{{url_for('logout')}}">
+        <button class="logout">Logout</button>
+    </a>
 </div>
+
+{% else %}
+<div style="text-align: center;">
+    <h4>Please login to view your account.</h4>
+    <a href="{{url_for('login')}}">
+        <button class="button">Login</button>
+    </a>
+    </div>
+{% endif %}
 {% endblock %}
