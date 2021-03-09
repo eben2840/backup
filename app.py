@@ -2,9 +2,10 @@ from flask import Flask, render_template, redirect, flash, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, ItemForm, LoginForm
 from flask_login import UserMixin, login_user, current_user, logout_user
-import pickle5 as pickle
 import secrets
 import os
+import urllib.request, urllib.parse
+import urllib
 
 from flask_login import LoginManager
 
@@ -22,7 +23,7 @@ class Item(db.Model):
     price = db.Column(db.String(10), nullable=True)
     description = db.Column(db.String(), nullable = False)
     image =  db.Column (db.String(60), default='default.jpg')
-    images =  db.Column (db.PickleType, nullable=True)
+    images =  db.Column (db.String, nullable=True)
     trending = db.Column (db.Boolean, default = False)
     # user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     vendor = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
@@ -198,6 +199,30 @@ def delete(itemid):
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/sendmessage')
+def sendmessage():
+    api_key = "aniXLCfDJ2S0F1joBHuM0FcmH" #Remember to put your own API Key here
+    phone = "0592865541" #SMS recepient"s phone number
+    message = "You have been verified. You can now sell on ineruu.com"
+    sender_id = "Tnsghana" #11 Characters maximum
+    send_sms(api_key,phone,message,sender_id)
+    flash (f'Account has been verified','success')
+    return redirect('dashboard')
+
+def send_sms(api_key,phone,message,sender_id):
+    params = {"key":api_key,"to":phone,"msg":message,"sender_id":sender_id}
+    url = 'https://apps.mnotify.net/smsapi?'+ urllib.parse.urlencode(params)
+    content = urllib.request.urlopen(url).read()
+    print (content)
+    print (url)
+
+
+@app.route('/verify')
+def verify():
+    return render_template('verify.html')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
