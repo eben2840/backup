@@ -3,7 +3,11 @@
 {% block body %}
 
 <div class="container">
-    <h1>Add an item</h1>
+  {% if update %}
+    <h1>Update an item</h1>
+  {% else  %}
+  <h1>Add an item</h1>
+  {%endif%}
 
 
 
@@ -40,12 +44,19 @@
               {% endfor %}
             {% endif%}
           </div> -->
+
+          {% if update %}
           <div style="text-align: center;" class="form-group">
-            {{form.submit (class="button")}}
+            {{form.submit (class="button", value="Update")}}
         </div>
+        {% else %}
+        <div style="text-align: center;" class="form-group">
+          {{form.submit (class="button")}}
+      </div>
+        {% endif %}
     </form>
     {% if update %}
-    <a href="{{ url_for('delete', itemid=item.id)}}">
+    <a>
     <div style="text-align: center;">
       <button class="button" style="background-color: red; color: white;">
         Delete Item

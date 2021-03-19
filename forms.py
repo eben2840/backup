@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.widgets import TextArea
@@ -15,9 +15,9 @@ class RegistrationForm(FlaskForm):
 
 class ItemForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    price = StringField('Price', validators=[DataRequired()])
+    price = IntegerField('Price', validators=[DataRequired()])
     description = StringField('Description', widget=TextArea(), validators=[DataRequired()])
-    picture = FileField('Add a picture', validators=[DataRequired() , FileAllowed(['jpg', 'png'])])
+    picture = FileField('Add a picture', validators=[ FileAllowed(['jpg','jpeg','png'])])
     other_pictures = MultipleFileField('Choose your other pictures',  validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Add Item')
 

@@ -183,11 +183,16 @@ def update(itemid):
         form.name.data = item.name
         form.price.data = item.price
         form.description.data = item.description
-        form.picture.data = item.image
+        form.picture.data = item.image  
     if request.method == 'POST':
         if form.validate_on_submit():
-            item = Item(name = form.name.data, description = form.description.data, price = form.price.data)
+            prevPicture = item.image
+            print(prevPicture)
+            item = Item(name = form.name.data, description = form.description.data, price = form.price.data, image = form.picture.data)
             db.session.commit()
+            flash(f'Your Item has been updated', 'success')
+            return redirect(url_for('account'))
+            
     return render_template('addpost.html', form=form, item=item, update=update)
 
 @app.route('/delete/<string:itemid>', methods=['POST','GET'])
