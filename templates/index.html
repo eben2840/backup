@@ -10,20 +10,24 @@
     <button style="width: 15%; background-color: blue;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
   </form>
  
-  <a href="{{url_for('categories')}}">
-  <div style="width: 100%; border: 1px solid black; padding: 16px; border-radius: 10px; " >
-    Show all categories 
+  <a href="{{url_for('categories')}}" style="text-decoration: none;">
+  <div style="width: 100%; background-color: blue; font-weight: bold; color: white; padding: 16px; border-radius: 10px; display: flex; justify-content: space-between; " >
+  <h6 style="margin-bottom: 0;">Show all categories</h6>
+  <i class="fas fa-angle-right"></i>
+    
+
   </div>
 </a>
 
   <br>
   <h4>Trending Ads</h4>
   
-  <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+  <!-- <div style="display: flex; flex-wrap: wrap; justify-content: space-between;"> -->
   
 
+  <div class="row">
     {% for item in items %}
-    
+<!--     
     <div class="card" style="width: 30; margin-bottom: 10px; border: 1px solid rgba(0, 0, 0, 0.411); border-radius: 10px;">
         <a style="text-decoration: none;" href="{{url_for('preview', itemid=item.id)}}">
           <div style="width: 40vw; height: 40vh; text-align: center; overflow: hidden; ">
@@ -41,8 +45,31 @@
               </div>
             </div>
         </a>
+        </div> -->
+
+
+<div class="col-6 col-sm-4 col-md-4">
+  <a style="text-decoration: none;" href="{{url_for('preview', itemid=item.id)}}">
+  <div class="card" style="margin-bottom: 5vh;">
+      <img src="../static/items/{{item.image}}" style="object-fit: cover; width: 100%;" alt="">
+      <div style="background-color: aliceblue; padding: 10px; border-radius: 0 0 10px 10px;">  
+        <h6 style="color: black;" >{{item.name}}</h6>
+        <div style="display: flex; justify-content: space-between;">
+          <h6 style="font-size: small;" class="text-muted">Ghc{{item.price}}</h6>
+          {% if item.like %}
+          <i style="color: rgb(0, 0, 255);" class="fas fa-heart"></i>
+          {% else %}
+          <i class="fas fa-heart"></i>
+          {% endif %}
         </div>
+      </div>
+  </div>
+  </a>
+</div>
+
     {% endfor %}
+</div>
+    
 
       <!-- <div class="card" style="width: 45%;">
         <img style="width: 100%;" src="{{url_for('static', filename="img/main.jpg")}}">
@@ -59,7 +86,7 @@
         <h4>Item Name</h4>
         <h6>Item Price</h6>
     </div> -->
-  </div>
+
   
 </div>
 {% endblock %}
