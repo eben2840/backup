@@ -10,8 +10,9 @@ import urllib
 from flask_login import LoginManager
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
+# app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -23,8 +24,8 @@ class Item(db.Model):
     price = db.Column(db.String(10), nullable=True)
     description = db.Column(db.String(), nullable = False)
     image =  db.Column (db.String(60), default='default.jpg')
-    images =  db.Column (db.String, nullable=True)
     trending = db.Column (db.Boolean, default = False)
+    category = db.Column(db.String(), nullable=False)
     # user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     vendor = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 def __repr__(self): 
@@ -44,6 +45,13 @@ class User(db.Model, UserMixin):
 def __repr__(self):
     return '<User %r' % self.username
 
+
+class Categories(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+
+def __repr__(self):
+    return '<Category %r' % self.name
 
 
 def save_picture(form_picture):
@@ -75,20 +83,30 @@ def search():
 
 @app.route('/', methods=['POST','GET'])
 def index():
-    items = Item.query.order_by(Item.id.desc()).all()
+    # items = Item.query.order_by(Item.id.desc()).all()
+    items = Item.query.all()
     user = current_user
     home = 'home'
     return render_template('index.html', items = items, home=home)
 
+@app.route('/testing')
+def testing():
+    return render_template('grid.html')
 
 @app.route('/preview/<int:itemid>')
 def preview(itemid):
     item = Item.query.filter_by(id=itemid).first()
     vendor = User.query.filter_by(id = item.vendor).first()
     vendorname = vendor.username
-    images = item.images
-    print(images)
-    return render_template('preview.html', item=item, vendorname=vendorname, vendor=vendor, images=images)
+
+    return render_template('preview.html', item=item, vendorname=vendorname, vendor=vendor)
+
+@app.route('/show/<string:category>')
+def show(category):
+    items = Item.query.filter_by(category = category).all()
+    print(items)
+    return render_template('show.html', items=items)
+
 
 @app.route('/additem', methods=['POST','GET'])
 def additem():
@@ -105,7 +123,7 @@ def additem():
                 picture = save_picture(form.picture.data)
                 pictures.append(picture)
                 print (pictures)
-        new_item = Item(name = form.name.data, price = form.price.data, image=pic, description = form.description.data, vendor = current_user.id, images = pictures)
+        new_item = Item(name = form.name.data, category=form.category.data, price = form.price.data, image=pic, description = form.description.data, vendor = current_user.id)
         db.session.add(new_item)
         db.session.commit()
         flash(f'New Item has been added', 'success')
@@ -139,6 +157,10 @@ def account():
 def allusers():
     allusers = User.query.all()
     return render_template('allusers.html', allusers=allusers)
+
+@app.route('/categories')
+def categories():
+    return render_template('cat.html')
 
 @app.route('/login',methods=['POST','GET'])
 def login():
@@ -189,10 +211,13 @@ def update(itemid):
             prevPicture = item.image
             print(prevPicture)
             item = Item(name = form.name.data, description = form.description.data, price = form.price.data, image = form.picture.data)
+            print(item)
             db.session.commit()
             flash(f'Your Item has been updated', 'success')
             return redirect(url_for('account'))
-            
+        else:
+            flash(f'There is a problem', 'danger')
+                 
     return render_template('addpost.html', form=form, item=item, update=update)
 
 @app.route('/delete/<string:itemid>', methods=['POST','GET'])

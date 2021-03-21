@@ -17,7 +17,8 @@ class ItemForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     price = IntegerField('Price', validators=[DataRequired()])
     description = StringField('Description', widget=TextArea(), validators=[DataRequired()])
-    picture = FileField('Add a picture', validators=[ FileAllowed(['jpg','jpeg','png'])])
+    picture = FileField('Add a picture', validators=[ FileAllowed(['jpg', 'png'])])
+    category = SelectField('Category', choices=[('Fashion', 'Fashion'), ('Tech','Tech'), ('Medicine','Medicine')])
     other_pictures = MultipleFileField('Choose your other pictures',  validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Add Item')
 
