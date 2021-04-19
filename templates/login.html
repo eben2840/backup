@@ -1,27 +1,29 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="landing">
-    <!-- <img style="width: 100%;" src="../static/img/default.jpg">  -->
-</div>
+<!-- <div class="landing">
+    <img style="width: 100%;" src="../static/img/default.jpg"> 
+</div> -->
 <div class="container" style="padding: 20px;">
-<h6>Login</h6>
+<h3 class="sub-heading">Hello again,<br> welcome back!</h3>
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            <!-- {{ form.phone.label}} -->
-            {{ form.phone(class="form-control space", placeholder="Phone Number")}}
+            {{ form.phone(class="space", placeholder="Phone Number")}}
         </div>
+        <br>
         <div class="form-group">
-            {{ form.password.label}}
-            {{ form.password(class="space form-control", placeholder='password')}}
+
+            {{ form.password(class="space", placeholder='Password')}}
         </div>
         <div class="form-group" style="text-align: center;">
             {{form.submit (class="login-button")}}
         </div>
     </form>
-    <a href="{{url_for('register')}}">Sign Up</a>
+    <h6 class="text-muted">Already have an account?<a style="color: black;" href="{{url_for('register')}}">Sign Up</a></h6>
 </div>
+<!-- <div style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: black; height: 30vh; background-image: url(../static/img/pattern.jpeg); opacity: 0.3">
+</div> -->
 
 
 {% endblock %}

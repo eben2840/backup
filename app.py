@@ -1,19 +1,19 @@
-from flask import Flask, render_template, redirect, flash, url_for, request
-from flask_sqlalchemy import SQLAlchemy
-from forms import RegistrationForm, ItemForm, LoginForm
-from flask_login import UserMixin, login_user, current_user, logout_user
 import secrets
 import os
 import urllib.request, urllib.parse
 import urllib
+from flask import Flask, render_template, redirect, flash, url_for, request
+from flask_sqlalchemy import SQLAlchemy
+from forms import RegistrationForm, ItemForm, LoginForm, Search
+from flask_login import UserMixin, login_user, current_user, logout_user
 
 from flask_login import LoginManager
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
-# app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+# app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
+app.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
@@ -81,13 +81,25 @@ def search():
     return render_template('results.html', items = items, search = 'iPhone')
 
 
+@app.route("/searchal/<string:search>", methods=['POST','GET'])
+def searchal(search):
+    search = search
+    items = Item.query.filter_by(name = search).all()
+    print(items)
+    return render_template('searchal.html', search=search, items=items)
+
 @app.route('/', methods=['POST','GET'])
 def index():
     # items = Item.query.order_by(Item.id.desc()).all()
+    form = Search()
     items = Item.query.all()
     user = current_user
     home = 'home'
-    return render_template('index.html', items = items, home=home)
+    if form.validate_on_submit():
+        search = form.search.data
+        return redirect(url_for('searchal', search = search))
+    return render_template('index.html', items = items, home=home, form=form)
+
 
 @app.route('/testing')
 def testing():
@@ -252,7 +264,10 @@ def send_sms(api_key,phone,message,sender_id):
 def verify():
     return render_template('verify.html')
 
-
+@app.route('/users')
+def users():
+    users = User.query.all()
+    return render_template("users.html", users = users)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -4,11 +4,19 @@
 <!-- <h6 style="background-color: rgba(0, 0, 255, 0.452); padding: 20px; border: 1px solid blue; color: blue; ">Click here <a href="#">here</a> to post an ad and start making money</h6> -->
 <div class="container">
 
+  <form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="" method="post">
+    {{ form.hidden_tag() }}
+    {{form.search(class="form-control",style="width:85%; padding: 20px;")}}
+    <!-- {{form.submit(style="width: 15%; background-color: blue;", class="btn btn-success")}} -->
+    <button style="width: 15%; background-color: blue;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
 
-<form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="/search" method="POST">
+</form>
+<!-- 
+<form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="/searchal" method="POST">
     <input class="form-control" style="width:85%; padding: 20px;" type="search" name="q" placeholder="Search for a keyword" aria-label="Search">
     <button style="width: 15%; background-color: blue;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
-  </form>
+    {{form.submit}}
+  </form> -->
  
   <a href="{{url_for('categories')}}" style="text-decoration: none;">
   <div style="width: 100%; background-color: blue; font-weight: bold; color: white; padding: 16px; border-radius: 10px; display: flex; justify-content: space-between; " >
@@ -20,7 +28,7 @@
 </a>
 
   <br>
-  <h4>Trending Ads</h4>
+  <h4>Recently added items</h4>
   
   <!-- <div style="display: flex; flex-wrap: wrap; justify-content: space-between;"> -->
   
@@ -48,10 +56,10 @@
         </div> -->
 
 
-<div class="col-6 col-sm-4 col-md-4">
+<div class="col-md-6">
   <a style="text-decoration: none;" href="{{url_for('preview', itemid=item.id)}}">
-  <div class="card" style="margin-bottom: 5vh;">
-      <img src="../static/items/{{item.image}}" style="object-fit: cover; width: 100%;" alt="">
+  <div class="card" style="margin-bottom: 5vh; ">
+      <img src="../static/items/{{item.image}}" style="object-fit: cover; width: 100%; height: 50vh;" alt="">
       <div style="background-color: aliceblue; padding: 10px; border-radius: 0 0 10px 10px;">  
         <h6 style="color: black;" >{{item.name}}</h6>
         <div style="display: flex; justify-content: space-between;">
@@ -66,6 +74,7 @@
   </div>
   </a>
 </div>
+
 
     {% endfor %}
 </div>
