@@ -6,7 +6,6 @@ from flask import Flask, render_template, redirect, flash, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, ItemForm, LoginForm, Search
 from flask_login import UserMixin, login_user, current_user, logout_user
-
 from flask_login import LoginManager
 
 app = Flask(__name__)
@@ -66,7 +65,6 @@ def save_picture(form_picture):
     return picture_fn
 
 
-
 @app.route('/search', methods=['POST'])
 def search():
     piw = request.args.get('q')
@@ -90,9 +88,9 @@ def searchal(search):
 
 @app.route('/', methods=['POST','GET'])
 def index():
-    # items = Item.query.order_by(Item.id.desc()).all()
     form = Search()
-    items = Item.query.all()
+    items = Item.query.order_by(Item.id.desc()).all()
+    # items = Item.query.all().order_by()
     user = current_user
     home = 'home'
     if form.validate_on_submit():
@@ -105,12 +103,12 @@ def index():
 def testing():
     return render_template('grid.html')
 
+
 @app.route('/preview/<int:itemid>')
 def preview(itemid):
     item = Item.query.filter_by(id=itemid).first()
     vendor = User.query.filter_by(id = item.vendor).first()
     vendorname = vendor.username
-
     return render_template('preview.html', item=item, vendorname=vendorname, vendor=vendor)
 
 @app.route('/show/<string:category>')
@@ -129,12 +127,12 @@ def additem():
         if form.picture.data:
             print('YO!!!!!!!!! IT IS OVER HERE!!!')
             pic = save_picture(form.picture.data)
-        if form.other_pictures.data:
-            for picture in form.other_pictures.data:
-                pictures = []
-                picture = save_picture(form.picture.data)
-                pictures.append(picture)
-                print (pictures)
+        # if form.other_pictures.data:
+        #     for picture in form.other_pictures.data:
+        #         pictures = []
+        #         picture = save_picture(form.picture.data)
+        #         pictures.append(picture)
+        #         print (pictures)
         new_item = Item(name = form.name.data, category=form.category.data, price = form.price.data, image=pic, description = form.description.data, vendor = current_user.id)
         db.session.add(new_item)
         db.session.commit()
