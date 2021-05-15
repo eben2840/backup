@@ -65,6 +65,7 @@ def save_picture(form_picture):
     return picture_fn
 
 
+
 @app.route('/search', methods=['POST'])
 def search():
     piw = request.args.get('q')
@@ -85,6 +86,80 @@ def searchal(search):
     items = Item.query.filter_by(name = search).all()
     print(items)
     return render_template('searchal.html', search=search, items=items)
+
+# def replace_all(text, dic):
+#     for i, j in dic.iteritems():
+#         text = text.replace(i, j)
+#     return text
+
+
+def search(searchquery):
+    items = Item.query.all()
+    search = searchquery.split()
+    foundItems = []
+    print(items)
+    print(search)
+    for s in range(len(search)):
+        # This is the word in the search bar
+        print(search[s])
+        for i in range(len(items)):
+            print("Searching for " + search[s] + " in " + items[i].name)
+            # Picks a specific item from the Database
+            item_string = str(items[i].name.split()).lower()
+            itemsArray = items[i].name.split()
+            print(item_string)
+            # Counts how many words are in that list
+            item_string_count = len(items[i].name.split())
+            print(item_string_count)
+            # Good Code
+            if item_string_count != 1:
+                print("More than 1 word: " + str(item_string))
+                for c in range(item_string_count):
+                    item_sub_string = itemsArray[c].lower()
+                    item_sub_string = item_sub_string.replace("[", "")
+                    item_sub_string = item_sub_string.replace("'", "")
+                    item_sub_string = item_sub_string.replace("]", "")
+                    print("Item Sub String: " + item_sub_string)
+                    if search[s] == item_sub_string:
+                        print("found")
+                        print(items[i].id)
+                        foundItems.append(items[i].id)
+            else:
+                print("It is one word")
+                item_string = item_string.replace("[", "")
+                item_string = item_string.replace("'", "")
+                item_string = item_string.replace("]", "")
+                if search[s] == item_string:
+                    print("found")
+                    print(items[i].id)
+                    foundItems.append(items[i].id)
+                    print("We found the ff:" + str(foundItems))
+            # End of Good code
+
+            # else:
+            #     print(type(search[s]))
+            #     print(len(search[s]))
+            #     print(type(str(items[i].name.split())))
+            #     print(len(str(items[i].name.split())))
+            #     res = str(items[i].name.split())    
+            #     x = res.replace("[", "")
+            #     y = x.replace("'", "")
+            #     z = y.replace("]", "")
+            #     print("Not found")
+                # print(items[i].name.split())
+    return foundItems
+
+searchResults = []
+queryResult = search('iphone')
+print("Found" + str(queryResult))
+for f in queryResult:
+    item = Item.query.get_or_404(f)
+    searchResults.append(item)
+    print(searchResults)
+
+
+
+
 
 @app.route('/', methods=['POST','GET'])
 def index():
