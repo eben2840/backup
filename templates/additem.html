@@ -15,20 +15,25 @@
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.name.label()}}
-            {{ form.name(class="form-control")}}
+            {{ form.name(class="space", placeholder="Name")}}
         </div>
+        <br>
         <div class="form-group">
           {{ form.category.label}}
-          {{ form.category(class="form-control")}}
+          {{ form.category(class="space", placeholder="Category")}}
       </div>
+      <br>
         <div class="form-group">
             {{ form.price.label}}
-            {{ form.price(class="form-control")}}
+            {{ form.price(class="space", placeholder="Price")}}
         </div>
+        <br>
+
         <div class="form-group">
             {{ form.description.label}}
-            {{ form.description(class="form-control", cols="35", rows="7")}}
+            {{ form.description(class="space", cols="35", rows="7", placeholder="Enter a description")}}
         </div>
+        <br>
         <div class="form-group">
             {{ form.picture.label }}
             {{ form.picture(class="form-control")}}

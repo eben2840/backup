@@ -1,7 +1,11 @@
 body{
   /* font-family: 'Poppins', sans-serif; */
   font-family: 'Plus Jakarta Display', sans-serif;
+}
 
+a{
+  text-decoration:none ;
+  color: black;
 }
 
 .scrolling-wrapper-flexbox {
@@ -11,7 +15,15 @@ body{
   -webkit-overflow-scrolling: touch;
 
 }
-
+.ellipse{
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+  border-radius: 50%;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 10px;
+}
 .options-button{
   border: none;
   width: 100%;
@@ -46,6 +58,7 @@ body{
 .card1 {
   width: 100%;
   padding-bottom: 75%;
+
   background: gold; /** <-- For the demo **/
 }
 /* ---------- */
@@ -53,6 +66,10 @@ body{
 .strip{
   display: flex;
   justify-content: space-between;
+}
+
+.strip-flex{
+  display: flex;
 }
 
 .result{
@@ -89,12 +106,13 @@ body{
 
 .logout{
   border: none;
-  width: 45%;
+  width: 90%;
   background-color: red;
   border-radius: 10px;
   color: white;
   padding: 20px;
   margin: 10px 0;
+  font-weight: bold;
 }
 
 .space{

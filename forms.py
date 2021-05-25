@@ -14,7 +14,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
 class ItemForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired(), Length(max=24)])
     price = IntegerField('Price', validators=[DataRequired()])
     description = StringField('Description', widget=TextArea(), validators=[DataRequired()])
     picture = FileField('Add a picture', validators=[ FileAllowed(['jpg', 'png','jpeg'])])

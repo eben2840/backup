@@ -3,14 +3,16 @@
 {% block body %}
 <!-- <h6 style="background-color: rgba(0, 0, 255, 0.452); padding: 20px; border: 1px solid blue; color: blue; ">Click here <a href="#">here</a> to post an ad and start making money</h6> -->
 <div class="container">
+  <br>
 
-  <form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="" method="post">
+  <form class="form-inline my-2 my-lg-0 mt-2 space" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="" method="post">
     {{ form.hidden_tag() }}
-    {{form.search(class="form-control",style="width:85%; padding: 20px;", placeholder="Search for an item")}}
+    {{form.search(class="form-control",style="width:85%; border: none", placeholder="Search for an item")}}
     <!-- {{form.submit(style="width: 15%; background-color: blue;", class="btn btn-success")}} -->
-    <button style="width: 15%; background-color: blue;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
+    <button style="width: 15%; color: blue; background-color: transparent; border: none;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
 
 </form>
+<br>
 <!-- 
 <form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="/searchal" method="POST">
     <input class="form-control" style="width:85%; padding: 20px;" type="search" name="q" placeholder="Search for a keyword" aria-label="Search">
@@ -28,7 +30,7 @@
 </a>
 
   <br>
-  <h4>Recently added items</h4>
+  <h4 class="sub-heading">Recently added items</h4>
   
   <!-- <div style="display: flex; flex-wrap: wrap; justify-content: space-between;"> -->
   
@@ -56,9 +58,9 @@
         </div> -->
 
 
-<div class="col-md-6 col-6">
+<div class="col-md-4 col-6">
   <a style="text-decoration: none;" href="{{url_for('preview', itemid=item.id)}}">
-  <div class="card" style="margin-bottom: 5vh; ">
+  <div class="card space" style="margin-bottom: 5vh; padding: 0; border: none; border-radius: 0 0 10px 10px;">
       <img src="../static/items/{{item.image}}" style="object-fit: cover; width: 100%; height: 20vh;" alt="">
       <div style="background-color: aliceblue; padding: 10px; border-radius: 0 0 10px 10px;">  
         <h6 style="color: black;" >{{item.name}}</h6>

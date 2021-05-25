@@ -1,5 +1,6 @@
 import secrets
 import os
+import datetime
 import urllib.request, urllib.parse
 import urllib
 from flask import Flask, render_template, redirect, flash, url_for, request
@@ -7,14 +8,16 @@ from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, ItemForm, LoginForm, Search
 from flask_login import UserMixin, login_user, current_user, logout_user
 from flask_login import LoginManager
-
+from PIL import Image
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
+# app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
 app.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
+
+
 
 
 class Item(db.Model):
@@ -28,7 +31,7 @@ class Item(db.Model):
     # user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     vendor = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 def __repr__(self): 
-    return'<Item %r>' % self.name
+    return f"Item('{self.name}', '{self.category}', )"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -59,41 +62,18 @@ def save_picture(form_picture):
     print(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/items', picture_fn)
-    form_picture.save(picture_path)
-    print ("The picture name is" + picture_fn)
 
+    output_size = (500, 500)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+    # form_picture.save(picture_path)
+    print ("The picture name is" + picture_fn)
     return picture_fn
 
+src="../static/items/92f33ab490e95eca.jpg"
 
-
-@app.route('/search', methods=['POST'])
-def search():
-    piw = request.args.get('q')
-    print(piw)
-    items = Item.query.all()
-    # totalitems = Item.query.all().count()
-    results = []
-    # for i in items:
-        # words = i.split()
-        # for word in splits:
-            # print(word)
-    return render_template('results.html', items = items, search = 'iPhone')
-
-
-@app.route("/searchal/<string:search>", methods=['POST','GET'])
-def searchal(search):
-    search = search
-    items = Item.query.filter_by(name = search).all()
-    print(items)
-    return render_template('searchal.html', search=search, items=items)
-
-# def replace_all(text, dic):
-#     for i, j in dic.iteritems():
-#         text = text.replace(i, j)
-#     return text
-
-
-def search(searchquery):
+def searchitem(searchquery):
     items = Item.query.all()
     search = searchquery.split()
     foundItems = []
@@ -149,28 +129,80 @@ def search(searchquery):
                 # print(items[i].name.split())
     return foundItems
 
-searchResults = []
-queryResult = search('iphone')
-print("Found" + str(queryResult))
-for f in queryResult:
-    item = Item.query.get_or_404(f)
-    searchResults.append(item)
-    print(searchResults)
+# searchResults = []
+# queryResult = search('case')
+# print("Found" + str(queryResult))
+# for f in queryResult:
+#     item = Item.query.get_or_404(f)
+#     searchResults.append(item)
+#     print(searchResults)
 
 
 
 
+
+@app.route('/search', methods=['POST'])
+def search():
+    piw = request.args.get('q')
+    print(piw)
+    items = Item.query.all()
+    # totalitems = Item.query.all().count()
+    results = []
+    # for i in items:
+        # words = i.split()
+        # for word in splits:
+            # print(word)
+    return render_template('results.html', items = items, search = 'iPhone')
+
+
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+@app.route('/shop<string:userid>')
+def shop(userid):
+
+    print(userid)
+    return render_template('shop.html')
+
+@app.route('/allitems')
+def allitems():
+    items = Item.query.all()
+    return render_template('allitems.html', items = items)
+
+
+@app.route("/searchal/<string:searchquery>", methods=['POST','GET'])
+def searchal(searchquery):
+    searchResultsArray = []
+    searchresults = (searchitem(searchquery))
+    print("Home" + str(searchresults))
+    for i in searchresults:
+        item = Item.query.get_or_404(i)
+        print(item)
+        searchResultsArray.append(item)
+    return render_template('searchal.html', search=searchquery, items=searchResultsArray)
+
+# def replace_all(text, dic):
+#     for i, j in dic.iteritems():
+#         text = text.replace(i, j)
+#     return text
 
 @app.route('/', methods=['POST','GET'])
+def start():
+    return render_template('splash.html')
+
+
+@app.route('/hello', methods=['POST','GET'])
 def index():
     form = Search()
     items = Item.query.order_by(Item.id.desc()).all()
     # items = Item.query.all().order_by()
-    user = current_user
     home = 'home'
     if form.validate_on_submit():
-        search = form.search.data
-        return redirect(url_for('searchal', search = search))
+        searchquery = form.search.data
+        searchquery = searchquery.lower()
+        print(searchquery)
+        return redirect(url_for('searchal', searchquery = searchquery))
     return render_template('index.html', items = items, home=home, form=form)
 
 
@@ -212,8 +244,19 @@ def additem():
         db.session.add(new_item)
         db.session.commit()
         flash(f'New Item has been added', 'success')
+        # x = datetime.now()
+        # today = x.strftime("%Y/%m/%d")
+        # time = x.strftime("%H:%M:%S")
+        params = "New Item Added\n" + form.name.data + '\n' + "By " + current_user.username + " "
+        sendtelegram(params)
         return redirect(url_for('account'))
-    return render_template('addpost.html', form=form)
+    return render_template('additem.html', form=form)
+
+def sendtelegram(params):
+    url = "https://api.telegram.org/bot1699472650:AAEso9qTbz1ODvKZMgRru5FhCEux_91bgK0/sendMessage?chat_id=-511058194&text=" + urllib.parse.quote(params)
+    content = urllib.request.urlopen(url).read()
+    print(content)
+    return content
 
 @app.route('/test', methods=['POST','GET'])
 def test():
@@ -229,7 +272,9 @@ def register():
         new_user = User(username = form.username.data, phone = form.phone.data, password=form.password.data)
         db.session.add(new_user)
         db.session.commit()
-        flash (f'Account for ' + form.username.data + ' has been created.', 'error') 
+        params = "New Account Created for " + new_user.username
+        sendtelegram(params)
+        flash (f'Account for ' + form.username.data + ' has been created.', 'success') 
         return redirect (url_for('index'))
     return render_template('register.html',  form=form)
 
@@ -310,6 +355,13 @@ def delete(itemid):
     Item.query.filter_by(id = itemid).delete()
     db.session.commit()
     return redirect(url_for('myitems'))
+
+@app.route('/admin/delete/<string:itemid>', methods=['POST','GET'])
+def admindelete(itemid):
+    Item.query.filter_by(id = itemid).delete()
+    db.session.commit()
+    return redirect(url_for('allitems'))
+
 
 @app.route('/dashboard')
 def dashboard():
