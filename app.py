@@ -348,7 +348,7 @@ def update(itemid):
         else:
             flash(f'There is a problem', 'danger')
                  
-    return render_template('addpost.html', form=form, item=item, update=update)
+    return render_template('additem.html', form=form, item=item, update=update)
 
 @app.route('/delete/<string:itemid>', methods=['POST','GET'])
 def delete(itemid):
