@@ -13,6 +13,8 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
+
+# Form validation for item name
 class ItemForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(max=24)])
     price = IntegerField('Price', validators=[DataRequired()])
