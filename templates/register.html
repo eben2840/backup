@@ -10,6 +10,11 @@
         <div class="form-group">
             <!-- {{ form.username.label()}} -->
             {{ form.username(class="space", placeholder="Enter a username")}}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <span style="color: red;">{{error}}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <br>
         <div class="form-group">

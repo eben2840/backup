@@ -291,6 +291,8 @@ def register():
         params = "New Account Created for " + new_user.username
         sendtelegram(params)
         flash (f'Account for ' + form.username.data + ' has been created.', 'success') 
+        user = User.query.filter_by(phone = form.phone.data).first()
+        login_user(user, remember=True)
         return redirect (url_for('index'))
     return render_template('register.html',  form=form)
 

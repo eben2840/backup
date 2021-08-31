@@ -3,15 +3,19 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Selec
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.widgets import TextArea
-from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import MultipleFileField
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Name', validators=[DataRequired()])
+    username = StringField('Name', validators=[DataRequired(), Length(max=10)])
     phone = StringField('Phone', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
+
+    def validate_phone(self, phone):
+        user = User.query.filter_by(phone=phone.data).first()
+        if user:
+            raise ValidationError('That phone number is taken. Please choose a different one.')
 
 
 # Form validation for item name
