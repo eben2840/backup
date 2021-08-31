@@ -20,6 +20,7 @@ class ItemForm(FlaskForm):
     price = IntegerField('Price', validators=[DataRequired()])
     description = StringField('Description', widget=TextArea(), validators=[DataRequired()])
     picture = FileField('Add a picture', validators=[ FileAllowed(['jpg', 'png','jpeg'])])
+    link = StringField('Firebase Link')
     category = SelectField('Category', choices=[('Fashion', 'Fashion'), ('Tech','Tech'), ('Medicine','Medicine'),('Jobs','Jobs'),('Vehicles','Vehicles'),('Animals','Animals'),('Food','Food'),('Pets','Pets'),('Others','Others')])
     other_pictures = MultipleFileField('Choose your other pictures',  validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Add Item')

@@ -61,8 +61,7 @@
 <div class="col-md-4 col-6">
   <a style="text-decoration: none;" href="{{url_for('preview', itemid=item.id)}}">
   <div class="card space" style="margin-bottom: 5vh; padding: 0; border: none; border-radius: 0 0 10px 10px;">
-      <img data-lazysrc="../static/items/{{item.image}}" async style="object-fit: cover; width: 100%; height: 20vh;" alt="">
-      <!-- <img data-lazysrc='http://www.amazingjokes.com/images/20140902-amazingjokes-title.png'/> -->
+      <img src="{{item.image}}" async style="object-fit: cover; width: 100%; height: 20vh;" alt="">
       <div style="background-color: aliceblue; padding: 10px; border-radius: 0 0 10px 10px;">  
         <h6 style="color: black;" >{{item.name}}</h6>
         <div style="display: flex; justify-content: space-between;">
@@ -77,8 +76,6 @@
   </div>
   </a>
 </div>
-
-
     {% endfor %}
 </div>
     

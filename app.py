@@ -9,12 +9,14 @@ from forms import RegistrationForm, ItemForm, LoginForm, Search
 from flask_login import UserMixin, login_user, current_user, logout_user
 from flask_login import LoginManager
 from PIL import Image
+from flask_migrate import Migrate
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
 # app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
 app.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 
 
@@ -25,7 +27,7 @@ class Item(db.Model):
     name = db.Column(db.String(50), nullable=False)
     price = db.Column(db.String(10), nullable=True)
     description = db.Column(db.String(), nullable = False)
-    image =  db.Column (db.String(60), default='default.jpg')
+    image =  db.Column (db.String(), default='default.jpg')
     trending = db.Column (db.Boolean, default = False)
     category = db.Column(db.String(), nullable=False)
     # user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
@@ -68,6 +70,20 @@ def save_picture(form_picture):
     i.thumbnail(output_size)
     i.save(picture_path)
     # form_picture.save(picture_path)
+    print ("The picture name is" + picture_fn)
+    return picture_fn
+
+def save_picture_to_firebase(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    print(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/items', picture_fn)
+
+    output_size = (500, 500)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
     print ("The picture name is" + picture_fn)
     return picture_fn
 
@@ -231,16 +247,16 @@ def additem():
     if form.validate_on_submit():
         pic = 'default.png'
         pictures = 'default.png'
-        if form.picture.data:
-            print('YO!!!!!!!!! IT IS OVER HERE!!!')
-            pic = save_picture(form.picture.data)
+        # if form.picture.data:
+        #     print('YO!!!!!!!!! IT IS OVER HERE!!!')
+            # pic = save_picture(form.picture.data)   
         # if form.other_pictures.data:
         #     for picture in form.other_pictures.data:
         #         pictures = []
         #         picture = save_picture(form.picture.data)
         #         pictures.append(picture)
         #         print (pictures)
-        new_item = Item(name = form.name.data, category=form.category.data, price = form.price.data, image=pic, description = form.description.data, vendor = current_user.id)
+        new_item = Item(name = form.name.data, category=form.category.data, price = form.price.data, image=form.link.data, description = form.description.data, vendor = current_user.id)
         db.session.add(new_item)
         db.session.commit()
         flash(f'New Item has been added', 'success')
