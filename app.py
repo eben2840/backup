@@ -5,7 +5,6 @@ import urllib.request, urllib.parse
 import urllib
 from flask import Flask, render_template, redirect, flash, url_for, request
 from flask_sqlalchemy import SQLAlchemy
-from forms import RegistrationForm, ItemForm, LoginForm, Search
 from flask_login import UserMixin, login_user, current_user, logout_user
 from flask_login import LoginManager
 from PIL import Image
@@ -18,9 +17,6 @@ app.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
-
-
-
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -56,6 +52,8 @@ class Categories(db.Model):
 
 def __repr__(self):
     return '<Category %r' % self.name
+
+from forms import RegistrationForm, ItemForm, LoginForm, Search
 
 
 def save_picture(form_picture):
@@ -285,15 +283,20 @@ def test():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        new_user = User(username = form.username.data, phone = form.phone.data, password=form.password.data)
-        db.session.add(new_user)
-        db.session.commit()
-        params = "New Account Created for " + new_user.username
-        sendtelegram(params)
-        flash (f'Account for ' + form.username.data + ' has been created.', 'success') 
-        user = User.query.filter_by(phone = form.phone.data).first()
-        login_user(user, remember=True)
-        return redirect (url_for('index'))
+        checkUser = User.query.filter_by(phone = form.phone.data).first()
+        if checkUser:
+            flash(f'This Number has already been used','danger')
+            return redirect (url_for('register'))
+        else:
+            new_user = User(username = form.username.data, phone = form.phone.data, password=form.password.data)
+            db.session.add(new_user)
+            db.session.commit()
+            params = "New Account Created for " + new_user.username
+            sendtelegram(params)
+            flash (f'Account for ' + form.username.data + ' has been created.', 'success') 
+            user = User.query.filter_by(phone = form.phone.data).first()
+            login_user(user, remember=True)
+            return redirect (url_for('index'))
     return render_template('register.html',  form=form)
 
 @app.route('/account')
