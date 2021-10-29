@@ -205,11 +205,15 @@ def searchal(searchquery):
 def start():
     return render_template('splash.html')
 
+@app.route('/easypill', methods=['POST','GET'])
+def start():
+    return render_template('Easy Pill Webhooks URL')
+
 
 @app.route('/hello', methods=['POST','GET'])
 def index():
     form = Search()
-    items = Item.query.order_by(Item.id.desc()).all()
+    items = Item.query.order_by(Item.id.desc()).limit(20).all()
     # items = Item.query.all().order_by()
     home = 'home'
     if form.validate_on_submit():
@@ -236,7 +240,7 @@ def preview(itemid):
 def show(category):
     items = Item.query.filter_by(category = category).all()
     print(items)
-    return render_template('show.html', items=items)
+    return render_template('show.html', items=items, category=category)
 
 
 @app.route('/additem', methods=['POST','GET'])
@@ -345,6 +349,13 @@ def myitems():
     print(items)
     user = current_user
     return render_template('myitems.html' ,items = items, user=user)
+
+@app.route('/<int:phone>/<int:itemId>')
+def item(phone, itemId):
+    user = User.query.filter_by(phone = phone).first()
+    item = Item.query.filter_by(id=itemId).first()
+    return 'hmmmm'
+
 
 @app.route('/update/<string:itemid>', methods=['POST','GET'])
 def update(itemid):
