@@ -206,7 +206,7 @@ def start():
     return render_template('splash.html')
 
 @app.route('/easypill', methods=['POST','GET'])
-def start():
+def easypill():
     return render_template('Easy Pill Webhooks URL')
 
 
