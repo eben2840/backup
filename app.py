@@ -207,7 +207,7 @@ def start():
 
 @app.route('/easypill', methods=['POST','GET'])
 def easypill():
-    return render_template('Easy Pill Webhooks URL')
+    return 'Easy Pill Webhooks URL'
 
 
 @app.route('/hello', methods=['POST','GET'])
