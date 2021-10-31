@@ -209,9 +209,12 @@ def start():
 def easypill():
     api_key = "aniXLCfDJ2S0F1joBHuM0FcmH" #Remember to put your own API Key here
     phone = "0204716768" #SMS recepient"s phone number
-    message = "Test"
-    sender_id = "You have a new order please go to your dashboard and check it out " #11 Characters maximum
+    message = "You have a new order please go to your dashboard and check it out"
+    sender_id = "PrestoSl" #11 Characters maximum
     send_sms(api_key,phone,message,sender_id)
+
+    data = request.data
+    print(data)
     return 'Easy Pill Webhooks URL'
 
 
