@@ -10,8 +10,8 @@ from flask_login import LoginManager
 from PIL import Image
 from flask_migrate import Migrate
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
-# app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+# app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
 app.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
 db = SQLAlchemy(app)
@@ -217,6 +217,13 @@ def easypill():
     print(data)
     return 'Easy Pill Webhooks URL'
 
+
+@app.route("/voip/<string:params>", methods=['POST','GET'])
+def voip(params):
+    print(params)
+    with open('readme.txt', 'w') as f:
+        f.write(params)
+    return render_template('voip.html', textfile=params)
 
 @app.route('/hello', methods=['POST','GET'])
 def index():
