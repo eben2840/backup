@@ -284,7 +284,7 @@ def additem():
         params = "New Item Added\n" + form.name.data + '\n' + "By " + current_user.username + " "
         sendtelegram(params)
         return redirect(url_for('account'))
-    return render_template('additem.html', form=form)
+    return render_template('additemcopy.html', form=form)
 
 def sendtelegram(params):
     url = "https://api.telegram.org/bot1699472650:AAEso9qTbz1ODvKZMgRru5FhCEux_91bgK0/sendMessage?chat_id=-511058194&text=" + urllib.parse.quote(params)
