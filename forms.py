@@ -8,7 +8,7 @@ from wtforms.fields import MultipleFileField
 
 class RegistrationForm(FlaskForm):
     username = StringField('Name', validators=[DataRequired(), Length(max=10)])
-    phone = StringField('Phone', validators=[DataRequired()])
+    phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=10, message="Number must be 10 digits")])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
@@ -26,10 +26,10 @@ class ItemForm(FlaskForm):
     description = StringField('Description', widget=TextArea(), validators=[DataRequired()])
     picture = FileField('Add a picture', validators=[ FileAllowed(['jpg', 'png','jpeg'])])
     link = StringField('Firebase Link')
-    category = SelectField('Category', choices=[('Fashion', 'Fashion'), ('Tech','Tech'), ('Medicine','Medicine'),('Jobs','Jobs'),('Vehicles','Vehicles'),('Animals','Animals'),('Food','Food'),('Pets','Pets'),('Others','Others')])
+    category = SelectField('Category', choices=[('Fashion', 'Fashion'), ('Fashion', 'Fashion'), ('Tech','Tech'), ('Medicine','Medicine'),('Jobs','Jobs'),('Vehicles','Vehicles'),('Animals','Animals'),('Food','Food'),('Pets','Pets'),('Others','Others')])
     other_pictures = MultipleFileField('Choose your other pictures',  validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Add Item')
-
+ 
 class LoginForm(FlaskForm):
     phone = StringField('Phone', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])

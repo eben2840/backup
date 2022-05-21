@@ -11,7 +11,7 @@ class Item(db.Model):
     image =  db.Column (db.String(), default='default.jpg')
     trending = db.Column (db.Boolean, default = False)
     category = db.Column(db.String(), nullable=False)
-    # user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    user = db.Column(db.Integer, db.ForeignKey('user.username', ondelete="CASCADE"), nullable=False)
     vendor = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 def __repr__(self): 
     return f"Item('{self.name}', '{self.category}', )"
