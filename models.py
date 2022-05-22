@@ -14,7 +14,7 @@ class Item(db.Model):
     user = db.Column(db.Integer, db.ForeignKey('user.username', ondelete="CASCADE"), nullable=False)
     vendor = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 def __repr__(self): 
-    return f"Item('{self.name}', '{self.category}', )"
+    return f"Item('{self.name}', '{self.category}' )"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -24,7 +24,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(10), nullable = False)
     phone = db.Column(db.String(15), nullable=False)
-    password = db.Column(db.String(15))
+    # Remove password length limit
+    password = db.Column(db.String())
     stock = db.relationship('Item', backref='author', lazy=True)
 
 def __repr__(self):

@@ -16,12 +16,17 @@
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.name.label()}}
-            {{ form.name(class="space", placeholder="Name")}}
+            {{ form.name(class="card space", placeholder="Name")}}
+            {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                    <span style="color: red;">{{error}}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <br>
         <div class="form-group">
           {{ form.category.label}}
-          {{ form.category(class="space", placeholder="Category")}}
+          {{ form.category(class="card space", style="-webkit-appearance:none" , placeholder="Category")}}
       </div>
       <br>
         <div class="form-group">
@@ -30,7 +35,7 @@
         </div>
         <br>
 
-        <!-- <button onclick="changeimagesss(event)">TeSt</button> -->
+        <!-- <button onclick="changeimagesss(event)">Test</button> -->
 
         <div class="form-group">
             {{ form.description.label}}

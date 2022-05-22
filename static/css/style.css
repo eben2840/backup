@@ -116,6 +116,8 @@ a{
 }
 
 .space{
+  -webkit-appearance: none;
+  -moz-appearance: none;
   padding: 20px;
   border-radius: 10px;
   width: 100%;
@@ -123,7 +125,6 @@ a{
   box-shadow: 2px 2px 10px 0px rgba(136, 136, 136, 0.3);
   background-color: white;
   font-family: 'Plus Jakarta Display', sans-serif;
-
 }
 
 .landing{

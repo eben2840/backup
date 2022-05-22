@@ -10,6 +10,11 @@
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.phone(class="space", placeholder="Phone Number")}}
+            {% if form.phone.errors %}
+                {% for error in form.phone.errors %}
+                    <span style="color: red;">{{error}}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <br>
         <div class="form-group">

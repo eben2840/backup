@@ -9,6 +9,7 @@ from flask_login import UserMixin, login_user, current_user, logout_user
 from flask_login import LoginManager
 from PIL import Image
 from flask_migrate import Migrate
+from pkg_resources import ResolutionError
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
 # app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
@@ -54,7 +55,8 @@ class Categories(db.Model):
 def __repr__(self):
     return '<Category %r' % self.name
 
-from forms import RegistrationForm, ItemForm, LoginForm, Search
+
+from forms import *
 
 
 def save_picture(form_picture):
@@ -284,6 +286,9 @@ def additem():
         params = "New Item Added\n" + form.name.data + '\n' + "By " + current_user.username + " "
         sendtelegram(params)
         return redirect(url_for('account'))
+    else:
+        print(form.errors)
+        flash('There was a problem, please try again.','danger')
     return render_template('additemcopy.html', form=form)
 
 def sendtelegram(params):
@@ -317,6 +322,9 @@ def register():
             user = User.query.filter_by(phone = form.phone.data).first()
             login_user(user, remember=True)
             return redirect (url_for('index'))
+    else:
+        print(form.errors)
+        flash (f'There was a problem', 'danger')
     return render_template('register.html',  form=form)
 
 @app.route('/account')
@@ -349,7 +357,6 @@ def login():
             flash(f'Incorrect details, please try again', 'danger')
     return render_template('login.html', form=form)
 
-
 @app.route('/bookmarks')
 def bookmarks():
     return 'Done'
@@ -364,7 +371,7 @@ def myitems():
     items = Item.query.filter_by(vendor = current_user.id).all()
     print(items)
     user = current_user
-    return render_template('myitems.html' ,items = items, user=user)
+    return render_template('myitems.html', items = items, user=user)
 
 @app.route('/<int:phone>/<int:itemId>')
 def item(phone, itemId):
@@ -410,6 +417,12 @@ def admindelete(itemid):
     db.session.commit()
     return redirect(url_for('allitems'))
 
+@app.route('/<string:username>')
+def usershop(username):
+    user = User.query.filter_by(username=username).first()
+    print(user)
+    print(user.stock)
+    return render_template('myitems.html', user=user, items=user.stock)
 
 @app.route('/dashboard')
 def dashboard():
