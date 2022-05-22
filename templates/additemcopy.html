@@ -12,13 +12,13 @@
 
 
 <h4 id="demo"></h4>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" novalidate method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
 
         <label for="image-picker">
             <div>
-                {% if editCandidate %}
-                <img id="image-preview" style="height: 30vh; object-fit:contain" src={{candidate.testField}} alt="your image" />
+                {% if update %}
+                <img id="image-preview" style="height: 30vh; object-fit:cover" src={{item.image}} alt="your image" />
                 {% else %}
                 <img id="image-preview" style="height: 30vh; object-fit:contain" src="{{url_for('static', filename='img/camera.png')}}" alt="your image" />
                 {% endif %}
@@ -29,7 +29,7 @@
         <input style="display:none" id="image-picker" type="file" required="required" accept="image/*" />
     
         <div class="form-group">
-            {{ form.name.label()}}
+            {{ form.name.label}}
             {{ form.name(class="space", placeholder="Name")}}
         </div>
         <br>
@@ -67,19 +67,19 @@
           </div>
 
           {% if update %}
-          <div style="text-align: center;" class="form-group">
-            {{form.submit (class="button", value="Update")}}
-        </div>
-        {% else %}
-        <div style="text-align: center;" id="submitButton" class="form-group">
-          {{form.submit (class="button")}}
-      </div>
-        {% endif %}
+            <div style="text-align: center;" id="submitButton"  class="form-group">
+              {{form.submit (class="button", value="Update")}}
+            </div>
+          {% else %}
+            <div style="text-align: center;" id="submitButton" class="form-group">
+              {{form.submit (class="button")}}
+            </div>
+          {% endif %}
     </form>
     {% if update %}
     <a href="{{url_for("delete",itemid=item.id)}}">
     <div style="text-align: center;">
-      <button id="uploadForm" class="button" style="background-color: red; color: white;">
+      <button id="uploadForm" class="button" type="button" style="background-color: red; color: white;">
         Delete Item
       </button>
       
@@ -157,10 +157,9 @@
              });
                    console.log(task);
                    console.log(image);
-                   console.log(secondImage.PromiseResult).then(res => {
-                       console.log("THis is" + res)
-                       
-                   });
+                  //  console.log(secondImage.PromiseResult).then(res => {
+                  //      console.log("THis is" + res)
+                  //  });
        
                    // Data model to be uploaded to the database
                    var data = {

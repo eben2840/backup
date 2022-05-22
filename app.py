@@ -286,7 +286,7 @@ def additem():
         params = "New Item Added\n" + form.name.data + '\n' + "By " + current_user.username + " "
         sendtelegram(params)
         return redirect(url_for('account'))
-    else:
+    elif not form.is_submitted():
         print(form.errors)
         flash('There was a problem, please try again.','danger')
     return render_template('additemcopy.html', form=form)
@@ -380,30 +380,39 @@ def item(phone, itemId):
     return 'hmmmm'
 
 
-@app.route('/update/<string:itemid>', methods=['POST','GET'])
+@app.route('/update/<int:itemid>', methods=['POST','GET'])
 def update(itemid):
     form = ItemForm()
     item = Item.query.filter_by(id = itemid).first()
     update = True
     print(item)
     if request.method == 'GET':
+        print(item.image)
         form.name.data = item.name
         form.price.data = item.price
         form.description.data = item.description
-        form.picture.data = item.image  
+        form.picture.data = item.image 
+        form.link.data = item.image
+        form.category.data = item.category 
     if request.method == 'POST':
         if form.validate_on_submit():
             prevPicture = item.image
+            print(item.image)
             print(prevPicture)
-            item = Item(name = form.name.data, description = form.description.data, price = form.price.data, image = form.picture.data)
-            print(item)
+            print("Posting new remote")
+            # item = Item(name = form.name.data, description = form.description.data, price = form.price.data, image = form.link.data)
+            item.name = form.name.data
+            item.price = form.price.data
+            item.image = form.link.data
+            item.description = form.description.data
+            item.category = form.category.data
             db.session.commit()
             flash(f'Your Item has been updated', 'success')
             return redirect(url_for('account'))
         else:
             flash(f'There is a problem', 'danger')
                  
-    return render_template('additem.html', form=form, item=item, update=update)
+    return render_template('additemcopy.html', form=form, item=item, update=update)
 
 @app.route('/delete/<string:itemid>', methods=['POST','GET'])
 def delete(itemid):
