@@ -1,3 +1,6 @@
+from concurrent.futures import thread
+from crypt import methods
+import re
 import secrets
 import os
 import datetime
@@ -12,9 +15,9 @@ from flask_migrate import Migrate
 from pkg_resources import ResolutionError
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
-# app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@eligibility.central.edu.gh:5432/ineruu'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@eligibility.central.edu.gh:5432/ineruu'
 
 
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
@@ -39,6 +42,14 @@ def __repr__(self):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    phone = db.Column(db.String(), nullable=False)
+    price = db.Column(db.String(), nullable=True)
+    location = db.Column(db.String(), nullable=True)
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -231,8 +242,19 @@ def voip(params):
         f.write(params)
     return render_template('voip.html', textfile=params)
 
+# def addToCard(addToCart):
+#     print ("add to cart thing")
+#     return redirect(url_for('index'))
+    
+shoppingCart = [4,3,2]
+
+@app.route("/hello/<string:itemId>", methods=['POST','GET'])
 @app.route('/hello', methods=['POST','GET'])
-def index():
+def index(itemId=0):
+    print(itemId)
+    if itemId != 0: 
+        flash(f'Added to cart.')
+        print(itemId)
     form = Search()
     items = Item.query.order_by(Item.id.desc()).limit(20).all()
     # items = Item.query.all().order_by()
@@ -244,11 +266,69 @@ def index():
         return redirect(url_for('searchal', searchquery = searchquery))
     return render_template('index.html', items = items, home=home, form=form)
 
-
 @app.route('/testing')
 def testing():
     return render_template('grid.html')
 
+@app.route('/delivery', methods=['POST','GET'])
+def delivery():
+    form = DeliveryForm()
+    if form.validate_on_submit():
+        newOrder = Order(name = form.username.data, phone=form.phone.data, price="350", location=form.location.data)
+        db.session.add(newOrder)
+        db.session.commit()
+        return redirect(url_for('reciept', orderId=newOrder.id))
+    return render_template('delivery.html',form=form)
+
+@app.route('/cart')
+def cart():
+    print(shoppingCart)
+    items = []
+    for i in shoppingCart:
+        theItem = Item.query.get_or_404(i)
+        print(theItem)
+        items.append(theItem)
+    print(items)
+    return render_template('myitems.html', items=items)
+
+@app.route('/remove/<int:id>')
+def remove(id):
+    print(id)
+    try:
+        theItem = Item.query.get_or_404(id)
+
+        flash(' ' + theItem.name + ' item has been deleted','danger')
+        shoppingCart.remove(id)
+    except:
+        print('close error')
+
+    # for i in shoppingCart:
+    #     print(i)
+    #     if i == id:
+    #         print("i.index()")
+    #         print(i)
+    #         print(index(4))
+    #         return redirect(url_for('index'))
+    #     else:
+    #         pass
+    return redirect(url_for('cart'))
+
+@app.route('/updateCart/<int:itemId>')
+def updateCart(itemId):
+    print(itemId)
+    for i in shoppingCart:
+        print(i)
+        if i == itemId:
+            flash(f'This item has been added to the cart.','warning')
+            return redirect(url_for('index'))
+        else:
+            pass
+    addedItem = Item.query.filter_by(id=itemId).first()
+    # print("added " + addedItem)
+    shoppingCart.append(itemId)
+    print(shoppingCart)
+    flash(f' '+addedItem.name+ ' has been added to the cart.','success')
+    return redirect(url_for('index'))
 
 @app.route('/preview/<int:itemid>')
 def preview(itemid):
@@ -306,6 +386,11 @@ def test():
 
 # @app.route('/myitems')
 # def myitems():
+
+@app.route('/reciept/<int:orderId>', methods=['POST','GET'])
+def reciept(orderId):
+    order = Order.query.get_or_404(orderId)
+    return render_template('reciept.html', order=order)  
 
 @app.route('/register', methods=['POST','GET'])
 def register():
@@ -429,12 +514,7 @@ def admindelete(itemid):
     db.session.commit()
     return redirect(url_for('allitems'))
 
-@app.route('/<string:username>')
-def usershop(username):
-    user = User.query.filter_by(username=username).first()
-    print(user)
-    print(user.stock)
-    return render_template('myitems.html', user=user, items=user.stock)
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -468,4 +548,4 @@ def users():
     return render_template("users.html", users = users)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)

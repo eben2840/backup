@@ -2,25 +2,50 @@
 
 {% block body %}
 <div class="container">
-<a href="{{url_for('usershop', username = user.username)}}">
-    <h1>{{user.username}}</h1>
-</a>
-<h4 class="text-muted">{{user.phone}}</h4>
+
+    <br/>
+    <h4>Your Cart</h4>
+    <h6 class="text-muted">Your Total:</h6>
+    <br/>
+
 {% for item in items %}
-<a style="color: black; text-decoration: none;" href="{{url_for('update', itemid = item.id)}}">
+
+<a style="color: black; text-decoration: none;">
     <div class="options-button space">
-        <div style="display: flex; padding: 0;">
-            <div style="width: 70px; height:70px; margin-right: 10px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.1);">
-            <img style="width: 70px; height: 70px; object-fit: cover; border-radius: 50%;" src="{{item.image}}">
+        <div style="display: flex; padding: 0; justify-content: space-between;">
+            <div style="display: flex;">
+
+                <div style="width: 70px; height:70px; margin-right: 10px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.1);">
+                    <img style="width: 70px; height: 70px; object-fit: cover; border-radius: 50%;" src="{{item.image}}">
+                </div>
+                
+                <div>
+                    <h4>{{item.name}}</h4>
+                    <h6 class="text-muted">{{item.price}}</h6>
+                </div>
             </div>
+
+
             <div>
-                <h4>{{item.name}}</h4>
-                <h6 class="text-muted">Ghc {{ item.price | truncate(50) }}</h6>
+                <a href="{{url_for("remove",id=item.id)}}">
+                    <i style="margin: auto;" class="fa fa-trash" aria-hidden="true"></i>
+                </a>
             </div>
         </div>
     </div>
 </a>
 {% endfor %}
+
+
+<div style="display: flex; justify-content: space-around;">
+    <button style="width: 80%;" class="button">
+        <a style="text-decoration: none; color: white;" href="{{url_for('delivery')}}">
+            <i class="fas fa-phone-alt"></i>
+             Add To Cart
+        </a>
+        </button>
+</div>
+
 
 </div>
 

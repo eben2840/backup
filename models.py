@@ -3,8 +3,14 @@ from datetime import datetime
 from app import db, login_manager, app
 from flask_login import UserMixin
 
-class Item(db.Model):
+class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    phone = db.Column(db.String(), nullable=False)
+    price = db.Column(db.String(), nullable=True)
+    location = db.Column(db.String(), nullable=True)
+
+class Item(db.Model):
     name = db.Column(db.String(50), nullable=False)
     price = db.Column(db.String(10), nullable=True)
     description = db.Column(db.String(), nullable = False)
@@ -19,6 +25,8 @@ def __repr__(self):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

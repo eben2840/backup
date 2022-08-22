@@ -5,28 +5,65 @@
     <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <h4 style="margin: 0;">{{item.name}}</h4>
     </div>
-    <a href="{{url_for('usershop', username = vendorname)}}">
-        <h6 class="text-muted" >@{{vendorname}}</h6>
-    </a>
+
     <div style="width: 80vw; height: 50vh; margin: auto; overflow: hidden; text-align: center;">
         <img style="width: 100%; margin-bottom: 10px; margin: auto;" src="{{item.image}}">
     </div>
      
 <div style="display: flex; justify-content: space-between;">
     <h1 class="text-muted">Ghc {{item.price}}</h1>
-    <i class="fas fa-bookmark fa-2x"></i>
+    <div style="display: flex;">
+        <i id="add" class="fa fa-plus" aria-hidden="true"></i>
+        <h6 style="padding: 0 50px;" id="output">1</h6>
+        <i id="subtract" class="fa fa-minus" aria-hidden="true"></i>
+    </div>
 </div>
 
-    <h6>Negotiable</h6>
+    <h6>{{item.category}}</h6>
     <!-- <hr> -->
 
     <h6 class="text-muted">Item Description</h6>
     <h6>{{item.description}}</h6>
 
-    <div style="display: flex; justify-content: space-between;">
-        <button class="button"><a style="text-decoration: none; color: white;" href="tel:{{vendor.phone}}"><i class="fas fa-phone-alt"></i> Call Me </a></button>
-        <button class="button"><i class="fas fa-bookmark"></i> Save item</button>
+   
+    <div style="display: flex; justify-content: space-around;">
+        <button style="width: 80%;" class="button">
+            <!-- <a style="text-decoration: none; color: white;" href="tel:{{vendor.phone}}"> -->
+            <a style="text-decoration: none; color: white;" href="{{url_for('updateCart', itemId=item.id)}}">
+                <i class="fas fa-phone-alt"></i>
+                 Add To Cart
+            </a>
+            </button>
+        <!-- <button class="button"><i class="fas fa-bookmark"></i> Save item</button> -->
     </div>
     <hr>
 </div>
+
+
+<script>
+let add = document.querySelector("#add");
+let subract = document.querySelector("#subtract");
+
+add.addEventListener("click", function () {
+  let output = document.querySelector("#output");
+  let result = Number(output.innerText) + 1;
+
+  if (result > 10) {
+    result = 0;
+  }
+
+  output.innerText = result;
+});
+
+subract.addEventListener("click", function () {
+  let output = document.querySelector("#output");
+  let result = Number(output.innerText) - 1;
+
+  if (result < 0) {
+    result = 0;
+  }
+
+  output.innerText = result;
+});
+</script>
 {% endblock %}
