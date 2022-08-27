@@ -29,7 +29,9 @@
                 {% endfor %}
             {% endif %}
         </div>
+        <h6 style="font-size: smaller; margin-top: .5rem;" class="text-muted">Please confirm this number so we can reach you.</h6>
         <br>
+
 
         <div class="form-group">
 
@@ -40,6 +42,12 @@
                 {% endfor %}
             {% endif %}
         </div>
+        <h6 style="font-size: smaller; margin-top: .5rem;" class="text-muted">Eg: Pronto Block 6 Room 12</h6>
+       
+        <div class="form-group" style="display: none;">
+            {{ form.items(class="space", placeholder="Enter a location", id="items")}}
+        </div>
+
         <br>
         <br>
         <div class="form-group" style="text-align: center;">
@@ -48,5 +56,10 @@
     </form>
 </div>
 
+
+<script>
+console.log(localStorage.getItem('cart'))
+document.getElementById('items').value = localStorage.getItem('cart')
+</script>
 
 {% endblock %}

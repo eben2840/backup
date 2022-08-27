@@ -22,6 +22,7 @@ class DeliveryForm(FlaskForm):
     username = StringField('Name', validators=[DataRequired(),  Regexp(r'^[\w.@+-]+$', message="Username must not include spaces") ,Length(max=10, message="Should be less than 10 characters")])
     phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=10, message="Number must be 10 digits")])
     location = StringField('Location', validators=[DataRequired()])
+    items = StringField('Items', validators=[DataRequired()])
     # password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=16, message="Password must be less than 16 characters")])
     # confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Delivery Up')

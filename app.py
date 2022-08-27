@@ -16,7 +16,7 @@ app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@eligibility.central.edu.gh:5432/ineruu'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@eligibility.central.edu.gh:5432/talanku'
 
 
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
@@ -48,6 +48,8 @@ class Order(db.Model):
     phone = db.Column(db.String(), nullable=False)
     price = db.Column(db.String(), nullable=True)
     location = db.Column(db.String(), nullable=True)
+    items = db.Column(db.String(), nullable=True)
+
 
 
 class User(db.Model, UserMixin):
@@ -245,7 +247,7 @@ def voip(params):
 #     print ("add to cart thing")
 #     return redirect(url_for('index'))
     
-shoppingCart = [4,3,2]
+shoppingCart = []
 
 @app.route("/hello/<string:itemId>", methods=['POST','GET'])
 @app.route('/hello', methods=['POST','GET'])
@@ -273,13 +275,19 @@ def testing():
 def delivery():
     form = DeliveryForm()
     if form.validate_on_submit():
-        newOrder = Order(name = form.username.data, phone=form.phone.data, price="350", location=form.location.data)
+        newOrder = Order(name = form.username.data, phone=form.phone.data, price="350", location=form.location.data, items=form.items.data)
         db.session.add(newOrder)
         db.session.commit()
+        print(newOrder)
+        params = "New Order id: " + str(newOrder.id) + '\n' + str(newOrder.phone) +'\n' + "Location: " +newOrder.location + '\n' + newOrder.items
+        try:
+            sendtelegram(params)
+        except:
+            print("Well that didsnt work...")
         return redirect(url_for('reciept', orderId=newOrder.id))
     return render_template('delivery.html',form=form)
 
-@app.route('/cart')
+@app.route('/cart', methods=['POST','GET'])
 def cart():
     print(shoppingCart)
     items = []
@@ -288,7 +296,15 @@ def cart():
         print(theItem)
         items.append(theItem)
     print(items)
+    if request.method == 'POST':
+        print("request.data")
+        print(request.form.get('items'))
+        # params = request.form.get('items')
+        # sendtelegram(params)
+        return redirect(url_for('delivery'))
     return render_template('myitems.html', items=items)
+
+
 
 @app.route('/remove/<int:id>')
 def remove(id):
@@ -523,7 +539,7 @@ def dashboard():
 def sendmessage():
     api_key = "aniXLCfDJ2S0F1joBHuM0FcmH" #Remember to put your own API Key here
     phone = "0592865541" #SMS recepient"s phone number
-    message = "You have been verified. You can now sell on ineruu.com"
+    message = "You have been verified. You can now sell on talanku.com"
     sender_id = "Tnsghana" #11 Characters maximum
     send_sms(api_key,phone,message,sender_id)
     flash (f'Account has been verified','success')
