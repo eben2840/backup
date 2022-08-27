@@ -23,6 +23,7 @@ class DeliveryForm(FlaskForm):
     phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=10, message="Number must be 10 digits")])
     location = StringField('Location', validators=[DataRequired()])
     items = StringField('Items', validators=[DataRequired()])
+    price = StringField('Price', validators=[DataRequired()])
     # password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=16, message="Password must be less than 16 characters")])
     # confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Delivery Up')
@@ -39,7 +40,7 @@ class ItemForm(FlaskForm):
     description = StringField('Description', widget=TextArea(), validators=[DataRequired()])
     picture = FileField('Add a picture', validators=[ FileAllowed(['jpg', 'png','jpeg'])])
     link = StringField('Firebase Link')
-    category = SelectField('Category', choices=[('Fashion', 'Fashion'), ('Fashion', 'Fashion'), ('Tech','Tech'), ('Medicine','Medicine'),('Jobs','Jobs'),('Vehicles','Vehicles'),('Animals','Animals'),('Food','Food'),('Pets','Pets'),('Others','Others')])
+    category = SelectField('Category', choices=[('Post Pill', 'Post Pill'), ('Delay','Delay'), ('Test Kits','Test Kits'), ('Protection','Protection'), ('Lubrication','Lubrication') ])
     other_pictures = MultipleFileField('Choose your other pictures',  validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Add Item')
  

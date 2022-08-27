@@ -14,7 +14,8 @@ from PIL import Image
 from flask_migrate import Migrate
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+# app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://egxasvuthotfll:8e1f7dcc973d1d23d5fa487c42a6eb7c51dc9399a5b321257448905131a9d5bf@ec2-44-209-186-51.compute-1.amazonaws.com:5432/df09ji9e0jl3dm'
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@eligibility.central.edu.gh:5432/talanku'
 
@@ -264,8 +265,8 @@ def index(itemId=0):
         searchquery = form.search.data
         searchquery = searchquery.lower()
         print(searchquery)
-        return redirect(url_for('searchal', searchquery = searchquery))
-    return render_template('index.html', items = items, home=home, form=form)
+        return redirect(url_for('searchal', searchquery = searchquery)) 
+    return render_template('index.html', items = items, home=home, form=form, cart=shoppingCart)
 
 @app.route('/testing')
 def testing():
@@ -275,11 +276,11 @@ def testing():
 def delivery():
     form = DeliveryForm()
     if form.validate_on_submit():
-        newOrder = Order(name = form.username.data, phone=form.phone.data, price="350", location=form.location.data, items=form.items.data)
+        newOrder = Order(name = form.username.data, phone=form.phone.data, price=form.price.data, location=form.location.data, items=form.items.data)
         db.session.add(newOrder)
         db.session.commit()
         print(newOrder)
-        params = "New Order id: " + str(newOrder.id) + '\n' + str(newOrder.phone) +'\n' + "Location: " +newOrder.location + '\n' + newOrder.items
+        params = "New Order id: " + str(newOrder.id) + '\n' + str(newOrder.phone) +'\n' + "Location: " +newOrder.location + '\n' + newOrder.items + '\n' + 'Total: Ghc' +  newOrder.price
         try:
             sendtelegram(params)
         except:
@@ -311,21 +312,14 @@ def remove(id):
     print(id)
     try:
         theItem = Item.query.get_or_404(id)
-
-        flash(' ' + theItem.name + ' item has been deleted','danger')
+        flash(' ' + theItem.name + ' has been deleted','danger')
         shoppingCart.remove(id)
     except:
+        flash(f'There was a problem, please try again.', 'danger')
         print('close error')
-
-    # for i in shoppingCart:
-    #     print(i)
-    #     if i == id:
-    #         print("i.index()")
-    #         print(i)
-    #         print(index(4))
-    #         return redirect(url_for('index'))
-    #     else:
-    #         pass
+    if len(shoppingCart) < 1:
+        # flash(f'Please add to your cart', 'warning')
+        return redirect(url_for('index'))
     return redirect(url_for('cart'))
 
 @app.route('/updateCart/<int:itemId>')

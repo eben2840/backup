@@ -18,9 +18,11 @@
         <div style="width: 100%;">
 
         <div style="display: flex; justify-content: space-between;">
-            <h4 class="name">{{item.name}}</h4>
-            <h6 style="color: red"><i style="margin: auto;" class="fa fa-trash" aria-hidden="true"></i> Remove</h6>
-        </div>
+            <h4 class="name" style="color: black;">{{item.name}}</h4>
+            <a href="{{url_for("remove", id=item.id)}}">
+                <h6 style="color: red"><i style="margin: auto;" class="fa fa-trash" aria-hidden="true"></i> Remove</h6>
+            </div>
+        </a>
         <div style="display: flex; justify-content: space-between;" id="cartCalc">
             <h6 class="price">Ghc<span class="priceValue">{{item.price}}</span></h6>
             <h6 style="display: none;" class="price">Ghc<span class="defaultPriceValue">{{item.price}}</span></h6>
@@ -41,14 +43,14 @@
 {% endfor %}
 
 
-<div style="display: flex; justify-content: space-around;">
+<div >
 
     <form action="" method="post">
     <input name="items" style="display: none;" id="inputForm" type="text">
-    <button onclick="saveCart()" type="submit" style="width: 100%;" class="button">
+    <button onclick="saveCart()" type="submit" style="width: 100%; font-weight: bold; display: flex; justify-content: center;" class="button">
             <!-- <i class="fas fa-phone-alt"></i> -->
-            <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
-             Add To Cart
+            <!-- <i class="fa fa-cart-arrow-down" aria-hidden="true"></i> -->
+             Buy Now Ghc<span  id="cartTotal2"></span>
     </button>
     </form>
 
@@ -131,6 +133,7 @@
         }
         console.log("Your cart total is:" + cartTotal)
         document.getElementById('cartTotal').innerText = cartTotal
+        document.getElementById('cartTotal2').innerText = cartTotal
 
         console.log("getAllItems")
         getAllItems()
@@ -152,13 +155,15 @@
         itemsTotal = document.getElementById('cartTotal').innerText
         items.push("Total = " + itemsTotal)
         console.log(items)
-        // Fill teh form
+        // Fill the form
         document.getElementById('inputForm').value = items
     }
 
     function saveCart(){
         // document.getElementById('inputForm').value = items
         localStorage.setItem('cart', document.getElementById('inputForm').value)
+        localStorage.setItem('cartTotal', document.getElementById('cartTotal').innerText)
+
     }
 
     </script>
