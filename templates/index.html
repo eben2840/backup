@@ -21,18 +21,16 @@
   </form> -->
 
 <!-- Button trigger modal -->
-
  
   {% if cart|length >= 1 %}
   <a href="{{url_for('cart')}}" style="text-decoration: none;">
   <div style="width: 100%; background-color: blue; font-weight: bold; color: white; padding: 26px; border-radius: 10px; display: flex; justify-content: space-between; " >
-  <h6 style="margin-bottom: 0;">You have {{cart|length}} items in your cart😍</h6>
+  <h6 style="margin-bottom: 0;">Click here to view the {{cart|length}} items in your cart😍</h6>
   
   <h6>{{cart|length}}</h6> 
   </div>
 </a>
   {% else %}
-
     <div style="width: 100%; background-color: #c4c4c4; font-weight: bold; color: white; padding: 26px; border-radius: 10px; display: flex; justify-content: space-between; " >
     <h6 style="margin-bottom: 0;">There is nothing in your cart☹️</h6>
     <h6>{{cart|length}}</h6> 
@@ -110,6 +108,8 @@
   </div>
 </div>
 
+
+
       <!-- <div class="card" style="width: 45%;">
         <img style="width: 100%;" src="{{url_for('static', filename="img/main.jpg")}}">
         <h4>Item Name</h4>
@@ -130,6 +130,8 @@
 </div>
 
 <script>  
+
+sessionStorage.setItem('cart', [])
   function ReLoadImages(){
       $('img[data-lazysrc]').each( function(){
           //* set the img src from data-src

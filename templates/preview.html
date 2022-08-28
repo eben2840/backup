@@ -23,43 +23,23 @@
 
    
     <div style="display: flex; justify-content: space-around;">
-        <button style="width: 80%;" class="button">
-            <!-- <a style="text-decoration: none; color: white;" href="tel:{{vendor.phone}}"> -->
-            <a style="text-decoration: none; color: white;" href="{{url_for('updateCart', itemId=item.id)}}">
+        <a style="text-decoration: none; color: white;" href="{{url_for('updateCart', itemId=item.id)}}">
+            <button style="width: 80%;" class="button">
                 <i class="fas fa-phone-alt"></i>
-                 Add To Cart
-            </a>
+                Add To Cart
             </button>
-        <!-- <button class="button"><i class="fas fa-bookmark"></i> Save item</button> -->
+        </a>
     </div>
     <hr>
 </div>
 
-
 <script>
-let add = document.querySelector("#add");
-let subract = document.querySelector("#subtract");
+cart = sessionStorage.getItem('cart')
+console.log(cart)
 
-add.addEventListener("click", function () {
-  let output = document.querySelector("#output");
-  let result = Number(output.innerText) + 1;
+function addItemToCart(itemId){
+  sessionStorage.setItem('cart' , itemId)
+}
 
-  if (result > 10) {
-    result = 0;
-  }
-
-  output.innerText = result;
-});
-
-subract.addEventListener("click", function () {
-  let output = document.querySelector("#output");
-  let result = Number(output.innerText) - 1;
-
-  if (result < 0) {
-    result = 0;
-  }
-
-  output.innerText = result;
-});
 </script>
 {% endblock %}

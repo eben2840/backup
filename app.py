@@ -6,7 +6,7 @@ import os
 import datetime
 import urllib.request, urllib.parse
 import urllib
-from flask import Flask, render_template, redirect, flash, url_for, request
+from flask import Flask, render_template, redirect, flash, url_for, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, current_user, logout_user
 from flask_login import LoginManager
@@ -222,6 +222,7 @@ def searchal(searchquery):
 
 @app.route('/', methods=['POST','GET'])
 def start():
+    session['cart'] = []
     return render_template('splash.html')
 
 @app.route('/easypill', methods=['POST','GET'])
@@ -247,20 +248,32 @@ def voip(params):
 # def addToCard(addToCart):
 #     print ("add to cart thing")
 #     return redirect(url_for('index'))
-    
-shoppingCart = []
 
 @app.route("/hello/<string:itemId>", methods=['POST','GET'])
-@app.route('/hello', methods=['POST','GET'])
-def index(itemId=0):
-    print(itemId)
+def index(itemId):
     if itemId != 0: 
         flash(f'Added to cart.')
-        print(itemId)
+        cart = session['cart']
+        print(cart)
     form = Search()
+    items = Item.query.order_by(Item.id.desc()).limit(20).all()
+    home = 'home'
+    if form.validate_on_submit():
+        searchquery = form.search.data
+        searchquery = searchquery.lower()
+        print(searchquery)
+        return redirect(url_for('searchal', searchquery = searchquery)) 
+    return render_template('index.html', items = items, home=home, form=form, cart=session['cart'])
+
+@app.route('/hello', methods=['POST','GET'])
+def home():
+    form = Search()
+    session['cart'] = []
     items = Item.query.order_by(Item.id.desc()).limit(20).all()
     # items = Item.query.all().order_by()
     home = 'home'
+    shoppingCart = session['cart']
+    print(type(shoppingCart))
     if form.validate_on_submit():
         searchquery = form.search.data
         searchquery = searchquery.lower()
@@ -290,6 +303,7 @@ def delivery():
 
 @app.route('/cart', methods=['POST','GET'])
 def cart():
+    shoppingCart = session['cart']
     print(shoppingCart)
     items = []
     for i in shoppingCart:
@@ -310,10 +324,12 @@ def cart():
 @app.route('/remove/<int:id>')
 def remove(id):
     print(id)
+    shoppingCart = session['cart']
     try:
         theItem = Item.query.get_or_404(id)
         flash(' ' + theItem.name + ' has been deleted','danger')
         shoppingCart.remove(id)
+        session['cart'] = shoppingCart
     except:
         flash(f'There was a problem, please try again.', 'danger')
         print('close error')
@@ -325,22 +341,24 @@ def remove(id):
 @app.route('/updateCart/<int:itemId>')
 def updateCart(itemId):
     print(itemId)
+    shoppingCart = session['cart']
+    # Checks for duplication
     for i in shoppingCart:
         print(i)
         if i == itemId:
             flash(f'This item has been added to the cart.','warning')
-            return redirect(url_for('index'))
-        else:
-            pass
+            return redirect(url_for('home'))
     addedItem = Item.query.filter_by(id=itemId).first()
     # print("added " + addedItem)
     shoppingCart.append(itemId)
     print(shoppingCart)
+    session['cart'] = shoppingCart
     flash(f' '+addedItem.name+ ' has been added to the cart.','success')
-    return redirect(url_for('index'))
+    return redirect(url_for('index', itemId=itemId))
 
 @app.route('/preview/<int:itemid>')
 def preview(itemid):
+    print(session['cart'])
     item = Item.query.filter_by(id=itemid).first()
     vendor = User.query.filter_by(id = item.vendor).first()
     vendorname = vendor.username
@@ -351,7 +369,6 @@ def show(category):
     items = Item.query.filter_by(category = category).all()
     print(items)
     return render_template('show.html', items=items, category=category)
-
 
 @app.route('/additem', methods=['POST','GET'])
 def additem():
@@ -398,6 +415,7 @@ def test():
 
 @app.route('/reciept/<int:orderId>', methods=['POST','GET'])
 def reciept(orderId):
+    session['cart'] = []
     order = Order.query.get_or_404(orderId)
     return render_template('reciept.html', order=order)  
 
@@ -468,7 +486,7 @@ def myitems():
     items = Item.query.filter_by(vendor = current_user.id).all()
     print(items)
     user = current_user
-    return render_template('myitems.html', items = items, user=user)
+    return render_template('adminitems.html', items = items, user=user)
 
 @app.route('/<int:phone>/<int:itemId>')
 def item(phone, itemId):
@@ -511,7 +529,7 @@ def update(itemid):
                  
     return render_template('additemcopy.html', form=form, item=item, update=update)
 
-@app.route('/delete/<string:itemid>', methods=['POST','GET'])
+@app.route('/delete/<int:itemid>', methods=['POST','GET'])
 def delete(itemid):
     Item.query.filter_by(id = itemid).delete()
     db.session.commit()
