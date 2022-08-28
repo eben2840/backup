@@ -252,7 +252,7 @@ def voip(params):
 @app.route("/hello/<string:itemId>", methods=['POST','GET'])
 def index(itemId):
     if itemId != 0: 
-        flash(f'Added to cart.')
+        # flash(f'Added to cart.')
         cart = session['cart']
         print(cart)
     form = Search()
