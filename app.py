@@ -15,7 +15,7 @@ from flask_migrate import Migrate
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
 # app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://egxasvuthotfll:8e1f7dcc973d1d23d5fa487c42a6eb7c51dc9399a5b321257448905131a9d5bf@ec2-44-209-186-51.compute-1.amazonaws.com:5432/df09ji9e0jl3dm'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://hgikcuqfytwhhw:0665b5b321fccc2dbed4070c7c9451877b061d4fa9e3fc32b42220016d276222@ec2-44-195-132-31.compute-1.amazonaws.com:5432/d61i5rsnofs2q2'
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@eligibility.central.edu.gh:5432/talanku'
 
