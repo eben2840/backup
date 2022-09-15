@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css')}}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/gifstyle.css')}}">
 
-    <!-- <meta http-equiv="refresh" content="3;hello" /> -->
+    <meta http-equiv="refresh" content="3;hello" />
     <script data-ad-client="ca-pub-2966551291217261" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet"> -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
@@ -43,16 +43,19 @@ justify-content: center;">
           </div>
         </div>
     </div> -->
+<a href="{{url_for("home")}}">
 
     <div style="align-items: center;">
       <div>
         <img style="width: 100%;" src="../static/img/gif.mp4" alt="" srcset="">
       </div>
-      <h6 style="text-align: center;">This application only works in central university</h6>
+</a>
 
-      <a href="{{url_for('home')}}">
+      <!-- <h6 style="text-align: center;">This application only works in central university</h6> -->
+
+      <!-- <a href="{{url_for('home')}}">
       <button class="space" style="background-color: blue; color: white;">Yes, I am in central University</button>
-        </a>
+        </a> -->
     </div>
 
 
