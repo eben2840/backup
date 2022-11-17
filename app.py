@@ -880,7 +880,7 @@ def ticketPoll():
                 "MSG":"Oops, if you are seeing this, then Nana Kweku Really FuckUp on this USSD",
                 "MSGTYPE":False
             }
-            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating" + poll.probability )
+            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating \n" + poll.probability )
 
             resp = make_response(response)
             return resp
