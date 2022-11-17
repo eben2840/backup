@@ -77,6 +77,14 @@ class Categories(db.Model):
 def __repr__(self):
     return '<Category %r' % self.name
 
+class Movies(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    count = db.Column(db.String(50), nullable=False)
+
+def __repr__(self):
+    return '<Movie %r' % self.name % self.count
+
 class Poll(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sessionId = db.Column(db.String(), nullable=False)
@@ -315,7 +323,7 @@ def delivery():
         db.session.add(newOrder)
         db.session.commit()
         print(newOrder)
-        params = "New Order " + " username: " + newOrder.name + "\n" + "id: " + str(newOrder.id) + '\n' + str(newOrder.phone) +'\n' + "Location: " +newOrder.location + '\n' + newOrder.items + '\n' + 'Total: Ghc' +  newOrder.price
+        params = "New Order " + " username: "  + "\n" + newOrder.name + "\n" + "id: " + str(newOrder.id) + '\n' + str(newOrder.phone) +'\n' + "Location: " +newOrder.location + '\n' + newOrder.items + '\n' + 'Total: Ghc' +  newOrder.price
         try:
             sendtelegram(params)
             ticketMe(newOrder.phone, newOrder.price)
@@ -747,8 +755,7 @@ def checkForPollSession(sessionId):
 
 @app.route('/polls', methods=['GET', 'POST'])
 def polls():
-    movieOne = Poll.query.filter_by(movie = 1).all()
-    print(movieOne)
+    poll = Movies.query.all()
     return render_template('polls.html', poll = poll)
 
 @app.route('/naloussd', methods=['GET', 'POST'])
@@ -793,7 +800,12 @@ def ticketPoll():
             return resp
 
         elif poll.movie == None:
-            poll.movie = data
+            
+            movie = Movies.query.get_or_404(data)
+            movie.count = int(movie.count) + int(data)
+            print(movie.name + " has been update to " + movie.count)
+
+            poll.movie = movie.name
             db.session.commit()
             response = {
                 "USERID": "prestoGh",
