@@ -755,7 +755,7 @@ def checkForPollSession(sessionId):
 
 @app.route('/polls', methods=['GET', 'POST'])
 def polls():
-    poll = Movies.query.all()
+    poll = Movies.query.order_by(Movies.count.desc()).all()
     return render_template('polls.html', poll = poll)
 
 @app.route('/naloussd', methods=['GET', 'POST'])
@@ -807,6 +807,7 @@ def ticketPoll():
 
             poll.movie = movie.name
             db.session.commit()
+
             response = {
                 "USERID": "prestoGh",
                 "MSISDN":msisdn,
