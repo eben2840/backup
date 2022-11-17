@@ -800,10 +800,10 @@ def ticketPoll():
             return resp
 
         elif poll.movie == None:
-            
+
             movie = Movies.query.get_or_404(data)
             movie.count = int(movie.count) + int(data)
-            print(movie.name + " has been update to " + movie.count)
+            print(movie.name + " has been update to " + str(movie.count))
 
             poll.movie = movie.name
             db.session.commit()
