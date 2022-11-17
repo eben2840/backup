@@ -3,7 +3,7 @@ from crypt import methods
 import re
 import secrets
 import os
-import datetime
+from datetime import datetime
 from urllib import response
 import urllib.request, urllib.parse
 import urllib
@@ -744,6 +744,12 @@ def checkForPollSession(sessionId):
         session = newSession
     print(session)
     return session
+
+@app.route('/polls', methods=['GET', 'POST'])
+def polls():
+    movieOne = Poll.query.filter_by(movie = 1).all()
+    print(movieOne)
+    return render_template('polls.html', poll = poll)
 
 @app.route('/naloussd', methods=['GET', 'POST'])
 def ticketPoll():

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="container" style="padding: 20px;">
+    <h3 class="sub-heading">Poll results for: <br> A Night Under The Stars✨</h3>
+    <h6 class="text-muted">You can promote your choice by sharing and having your friends choose!</h6>
+    <br>
+
+    {% for item in poll %}
+    <div class="space">Item !</div>
+    {% endfor %}
+
+
+
+</div>
+
+
+<script>
+console.log(localStorage.getItem('cart'))
+document.getElementById('items').value = localStorage.getItem('cart')
+document.getElementById('price').value = localStorage.getItem('cartTotal')
+</script>
+
+{% endblock %}
