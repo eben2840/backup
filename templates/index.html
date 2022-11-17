@@ -1,31 +1,35 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<!-- <h6 style="background-color: rgba(0, 0, 255, 0.452); padding: 20px; border: 1px solid blue; color: blue; ">Click here <a href="#">here</a> to post an ad and start making money</h6> -->
+<!-- <h6 style="background-color: rgba(0, 0, 255, 0.452); padding: 20px; border: 1px solid  rgb(255, 134, 154);; color:  rgb(255, 134, 154);; ">Click here <a href="#">here</a> to post an ad and start making money</h6> -->
 <div class="container">
   <br>
+
 
   <form class="form-inline my-2 my-lg-0 mt-2 space" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="" method="post">
     {{ form.hidden_tag() }}
     {{form.search(class="form-control",style="width:85%; border: none", placeholder="Search for an item")}}
-    <!-- {{form.submit(style="width: 15%; background-color: blue;", class="btn btn-success")}} -->
-    <button style="width: 15%; color: blue; background-color: transparent; border: none;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
+    <!-- {{form.submit(style="width: 15%; background-color:  rgb(255, 134, 154);;", class="btn btn-success")}} -->
+    <button style="width: 15%; color:  rgb(255, 134, 154);; background-color: transparent; border: none;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
 
 </form>
 <br>
 <!-- 
 <form class="form-inline my-2 my-lg-0 mt-2" style="display: flex; padding-top: 20px; padding-bottom: 20px;" action="/searchal" method="POST">
     <input class="form-control" style="width:85%; padding: 20px;" type="search" name="q" placeholder="Search for a keyword" aria-label="Search">
-    <button style="width: 15%; background-color: blue;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
+    <button style="width: 15%; background-color:  rgb(255, 134, 154);;" class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
     {{form.submit}}
   </form> -->
 
 <!-- Button trigger modal -->
  
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Launch static backdrop modal
+</button> -->
   {% if cart|length >= 1 %}
   <a href="{{url_for('cart')}}" style="text-decoration: none;">
-  <div style="width: 100%; background-color: blue; font-weight: bold; color: white; padding: 26px; border-radius: 10px; display: flex; justify-content: space-between; " >
-  <h6 style="margin-bottom: 0;">Click here to view the {{cart|length}} items in your cart😍</h6>
+  <div style="width: 100%; background-color: rgb(255, 134, 154); font-weight: bold; color: white; padding: 26px; border-radius: 10px; display: flex; justify-content: space-between; " >
+  <h6 style="margin-bottom: 0;">Click to view the {{cart|length}} items in your cart😍</h6>
   
   <h6>{{cart|length}}</h6> 
   </div>
@@ -52,7 +56,7 @@
           <div style="width: 40vw; height: 40vh; text-align: center; overflow: hidden; ">
             <img style="width: 40vw; height: 40vh; border-radius: 10px; object-fit: cover;"  src="../static/items/{{item.image}}">
           </div>
-            <div style="background-color: aliceblue; padding: 10px; border-radius: 0 0 10px 10px;">  
+            <div style="background-color: alice rgb(255, 134, 154);; padding: 10px; border-radius: 0 0 10px 10px;">  
               <h6 style="color: black;" >{{item.name}}</h6>
               <div style="display: flex; justify-content: space-between;">
                 <h6 style="font-size: small;" class="text-muted">Ghc{{item.price}}</h6>
@@ -70,8 +74,8 @@
 <div class="col-md-4 col-6">
   <a style="text-decoration: none;" href="{{url_for('preview', itemid=item.id)}}">
   <div class="card space" style="margin-bottom: 5vh; padding: 0; border: none; border-radius: 0 0 10px 10px;">
-      <img src="{{item.image}}" async style="object-fit: cover; width: 100%; height: 20vh;" alt="">
-      <div style="background-color: aliceblue; padding: 10px; border-radius: 0 0 10px 10px;">  
+      <img src="{{item.image}}" loading="lazy" style="object-fit: cover; width: 100%; height: 20vh;" alt="">
+      <div style="background-color: rgb(255, 233, 237); padding: 10px; border-radius: 0 0 10px 10px;">  
         <h6 style="color: black;" >{{item.name}}</h6>
         <div style="display: flex; justify-content: space-between;">
           <h6 style="font-size: small;" class="text-muted">Ghc{{item.price}}</h6>
@@ -88,46 +92,36 @@
     {% endfor %}
 </div>
 
-<div class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+
+{% if initial %}
+
+<div class="modal fade " id="staticBackdrop" style="height: 100%;" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
       <div class="modal-body">
-        <p>Modal body text goes here.</p>
+        <img src="../static/flyer.png" alt="night under the stars" style="width: 100%;" srcset="">
+        <h6 style="text-align:center">Buy an item for more than 50 cedis and gain a free airbed for the night under the stars!!</h6>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <div style="display: flex; width:100%; margin-bottom: 3vh; justify-content: space-around;">
+        <button type="button" class="button" style="width: 90%;" data-bs-dismiss="modal">I am there!!!</button>
       </div>
     </div>
   </div>
 </div>
-
-
-
-      <!-- <div class="card" style="width: 45%;">
-        <img style="width: 100%;" src="{{url_for('static', filename="img/main.jpg")}}">
-        <h4>Item Name</h4>
-        <h6>Item Price</h6>
-    </div>
-    <div class="card" style="width: 45%;">
-        <div style="width: 50px; height:50px; background-color: aliceblue;"></div>
-        <h4>Item Name</h4>
-        <h6>Item Price</h6>
-    </div>
-    <div class="card" style="width: 45%;">
-        <div style="width: 50px; height:50px; background-color: aliceblue;"></div>
-        <h4>Item Name</h4>
-        <h6>Item Price</h6>
-    </div> -->
+{% endif %}
 
   
 </div>
+
+<script type="text/javascript">
+  $(window).on('load', function() {
+      $('#staticBackdrop').modal('show');
+  });
+</script>
 
 <script>  
 

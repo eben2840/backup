@@ -6,7 +6,7 @@
 <!-- Split search query into words-->
 {% set find = search.split() %}
 <!-- Print Search Query -->
-<h4 style="margin-top: 10px;"><i class="fas fa-angle-left" style="color: blue"></i> Search results for {{find[0]}}</h4>
+<h4 style="margin-top: 10px;"><i class="fas fa-angle-left" style="color:  rgb(255, 134, 154);"></i> Search results for {{find[0]}}</h4>
 {% for item in items %}
         {% set word = item.name.split() %}
         <!-- for the first word in the chosen item, -->

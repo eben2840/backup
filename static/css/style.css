@@ -18,7 +18,7 @@ a{
 .ellipse{
   width: 50px;
   height: 50px;
-  background-color: blue;
+  background-color:  rgb(255, 134, 154);;
   border-radius: 50%;
   margin-top: auto;
   margin-bottom: auto;
@@ -86,7 +86,7 @@ a{
 .button{
   border: none;
   width: 45%;
-  background-color: blue;
+  background-color:  rgb(255, 134, 154);;
   border-radius: 10px;
   color: white;
   padding: 20px;
@@ -96,7 +96,7 @@ a{
 .login-button{
   border: none;
   width: 100%;
-  background-color: blue;
+  background-color:  rgb(255, 134, 154);;
   border-radius: 10px;
   color: white;
   padding: 20px;
@@ -130,7 +130,7 @@ a{
 .landing{
   width: 100vw;
   height: 50vh;
-  background-color: blue;
+  background-color:  rgb(255, 134, 154);;
   background-image: url(../img/f683689acb8f3382022a27ceb5f66b3d.jpg);
 }
 

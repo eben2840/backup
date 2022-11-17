@@ -22,7 +22,7 @@ html,body{
       font-family: 'Poppins', sans-serif;
       margin: auto;
       text-align: center;
-      color: blue;
+      color:  rgb(255, 134, 154);;
       /* padding-top: 45%; */
     }
   
@@ -43,7 +43,7 @@ html,body{
   }
   
   .button {
-    background-color: blue;
+    background-color:  rgb(255, 134, 154);;
     border: none;
     color: white;
     padding: 10px 130px;

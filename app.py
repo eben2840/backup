@@ -13,6 +13,10 @@ from flask_login import UserMixin, login_user, current_user, logout_user
 from flask_login import LoginManager
 from PIL import Image
 from flask_migrate import Migrate
+import requests
+import random
+import string
+
 import json
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
@@ -72,6 +76,22 @@ class Categories(db.Model):
 
 def __repr__(self):
     return '<Category %r' % self.name
+
+class Poll(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sessionId = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String(), nullable=True)
+    phoneNumber = db.Column(db.String(), nullable=True)
+    movie = db.Column(db.String(), nullable = True)
+    movieConfirm =  db.Column (db.String(), nullable = True)
+    tlk = db.Column(db.Boolean, nullable=True)
+    probability = db.Column(db.String(), nullable=True)
+    startDate = db.Column(db.String(), nullable=True)
+    event = db.Column(db.String(), nullable=True)
+    
+    def __repr__(self): 
+        return f"Movie('{self.movie}', 'Probability: {self.probability}',  )"
+
 
 
 from forms import *
@@ -281,7 +301,7 @@ def home():
         searchquery = searchquery.lower()
         print(searchquery)
         return redirect(url_for('searchal', searchquery = searchquery)) 
-    return render_template('index.html', items = items, home=home, form=form, cart=shoppingCart)
+    return render_template('index.html', items = items, home=home, form=form, cart=shoppingCart, initial=True)
 
 @app.route('/testing')
 def testing():
@@ -295,9 +315,10 @@ def delivery():
         db.session.add(newOrder)
         db.session.commit()
         print(newOrder)
-        params = "New Order id: " + str(newOrder.id) + '\n' + str(newOrder.phone) +'\n' + "Location: " +newOrder.location + '\n' + newOrder.items + '\n' + 'Total: Ghc' +  newOrder.price
+        params = "New Order " + " username: " + newOrder.name + "\n" + "id: " + str(newOrder.id) + '\n' + str(newOrder.phone) +'\n' + "Location: " +newOrder.location + '\n' + newOrder.items + '\n' + 'Total: Ghc' +  newOrder.price
         try:
             sendtelegram(params)
+            ticketMe(newOrder.phone, newOrder.price)
         except:
             print("Well that didsnt work...")
         return redirect(url_for('reciept', orderId=newOrder.id))
@@ -322,6 +343,48 @@ def cart():
     return render_template('myitems.html', items=items)
 
 
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_uppercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    print("Random string of length", length, "is:", result_str)
+    return result_str
+
+def sendRancardMessage(phone,message):
+    url = "https://unify-base.rancard.com/api/v2/sms/public/sendMessage"
+    message = {
+        "apiKey": "dGFsYW5rdTpUYWxhbmt1Q3U6MTY1OkFQSWtkczAxNDI0Nzg1NDU=",
+        "contacts": [phone],
+        "message": message,
+        "scheduled": False,
+        "hasPlaceholders": False,
+        "senderId": "TalankuCu"
+    }
+    r = requests.post(url, json=message)
+    print(r.text)
+    return 
+
+# @app.route('/checkValidity', methods=['GET', 'POST'])
+def checkValidity(price):
+    valid = ""
+    if price < 50:
+        valid = "airChair"
+    elif price > 50:
+        valid = "airBed"
+    else:  
+        valid = None
+    return valid
+
+# a function that sends a message to your number after successful purchase
+# @app.route('/ticketMe/<string:phone>/<int:price>', methods=['GET', 'POST'])
+def ticketMe(phone, price):
+    code = get_random_string(10)
+    print(code)
+    validFor = checkValidity(price)
+    print(validFor)
+    if validFor != None:
+        sendRancardMessage(phone,'Congratulations! Please present this code at the event to claim your ' + validFor + ' for our movie night on the 26th November. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
+    return code
 
 @app.route('/remove/<int:id>')
 def remove(id):
@@ -549,15 +612,15 @@ def admindelete(itemid):
 def dashboard():
     return render_template('dashboard.html')
 
-@app.route('/sendmessage')
-def sendmessage():
+# @app.route('/sendmessage')
+def sendmessage(phone, message):
     api_key = "aniXLCfDJ2S0F1joBHuM0FcmH" #Remember to put your own API Key here
-    phone = "0592865541" #SMS recepient"s phone number
-    message = "You have been verified. You can now sell on talanku.com"
-    sender_id = "Tnsghana" #11 Characters maximum
+    phone = phone #SMS recepient"s phone number
+    message = message
+    sender_id = "PrestoSl" #11 Characters maximum
     send_sms(api_key,phone,message,sender_id)
-    flash (f'Account has been verified','success')
-    return redirect('dashboard')
+    # flash (f'Account has been verified','success')
+    return 'Done'
 
 def send_sms(api_key,phone,message,sender_id):
     params = {"key":api_key,"to":phone,"msg":message,"sender_id":sender_id}
@@ -662,6 +725,129 @@ def deleteOrder(id):
         response = "Order Id: " + str(id) + " was not deleted!!"
    
     return make_response(response)
+
+
+
+
+def checkForPollSession(sessionId):
+ # Search db for a session with that Id
+    session = Poll.query.filter_by(sessionId = sessionId).first()
+    # If there is none, create one
+    if session == None :
+        print("Session " + sessionId + " is not in the database.")
+        #  create session!
+        # print("sessionId " + getSession.sessionId + " has been found")
+        newSession = Poll(sessionId = sessionId)
+        db.session.add(newSession)
+        db.session.commit()
+        print(sessionId + " session has been created")
+        session = newSession
+    print(session)
+    return session
+
+@app.route('/naloussd', methods=['GET', 'POST'])
+def ticketPoll():
+    print(request.json)
+    sessionId = request.json['SESSIONID']
+    # menu = request.json['USERDATA']
+    print(sessionId)
+    msisdn = request.json['MSISDN']
+    mobileNetwork = request.json['NETWORK']
+    extension = '148'
+    data = request.json['USERDATA']
+    print(data)
+
+    poll = checkForPollSession(sessionId)
+    if poll:
+        print(poll)
+        # TODO : Fill the fields for repr for poll.
+        # If a poll has an event.
+        if poll.event == None:
+            poll.event = "A Night Under The Stars"
+            db.session.commit()
+            response = {
+                "USERID": "prestoGh",
+                "MSISDN":msisdn,
+                "MSG":"Welcome to the poll for A Night Under The Stars powered by talanku.com. \n Press 1 to continue",
+                "MSGTYPE":True
+            }
+            resp = make_response(response)
+            return resp
+
+        elif poll.startDate == None:
+            poll.startDate = datetime.now()
+            db.session.commit()
+            response = {
+                "USERID": "prestoGh",
+                "MSISDN":msisdn,
+                "MSG":"Which of these movies would you like to see \n 1. Black Panther  \n 2. Cruella \n 3. This Lady Called Life \n 4. Black Widow \n 5. Fatherhood ",
+                "MSGTYPE":True
+            }
+            resp = make_response(response)
+            return resp
+
+        elif poll.movie == None:
+            poll.movie = data
+            db.session.commit()
+            response = {
+                "USERID": "prestoGh",
+                "MSISDN":msisdn,
+                "MSG":"Have you used talanku.com before? \n 1.Yes \n 2.No",
+                "MSGTYPE":True
+            }
+            resp = make_response(response)
+            return resp
+
+        elif poll.tlk == None and data == "1":
+            poll.tlk = True
+            db.session.commit()
+            print("poll.tlk has bee set to True")
+            response = {
+                "USERID": "prestoGh",
+                "MSISDN":msisdn,
+                "MSG":"On a scale of 1 to 10, how was the service?!",
+                "MSGTYPE":True
+            }
+            resp = make_response(response)
+            return resp
+
+        elif poll.tlk == None and data == "2":
+            poll.tlk = False
+            poll.probability = 0
+            db.session.commit()
+            print("poll.tlk has bee set to True")
+            response = {
+                "USERID": "prestoGh",
+                "MSISDN":msisdn,
+                "MSG":"Thank you for your input. Poll results will go live on Friday! \n Visit talanku.com for more information",
+                "MSGTYPE":True
+            }
+            resp = make_response(response)
+            return resp
+
+        elif poll.probability == None:
+            poll.probability = data
+            db.session.commit()
+            response = {
+                "USERID": "prestoGh",
+                "MSISDN":msisdn,
+                "MSG":"Thank you for your input. Poll results will go live on Friday! \n Visit talanku.com for more information",
+                "MSGTYPE":False
+            }
+            resp = make_response(response)
+            return resp 
+
+       
+
+        else:
+            response = {
+                "USERID": "prestoGh",
+                "MSISDN":msisdn,
+                "MSG":"Oops, if you are seeing this, then Nana Kweku Really FuckUp on this USSD",
+                "MSGTYPE":False
+            }
+            resp = make_response(response)
+            return resp
 
 
 if __name__ == '__main__':
