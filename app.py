@@ -57,7 +57,8 @@ class Order(db.Model):
     location = db.Column(db.String(), nullable=True)
     items = db.Column(db.String(), nullable=True)
 
-
+# TODO add Ticketing model!
+# TODO add link to poll results
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -353,7 +354,7 @@ def cart():
 
 def get_random_string(length):
     # choose from all lowercase letter
-    letters = string.ascii_uppercase
+    letters = string.ascii_uppercase + string.digits
     result_str = ''.join(random.choice(letters) for i in range(length))
     print("Random string of length", length, "is:", result_str)
     return result_str
@@ -761,7 +762,7 @@ def polls():
 def broadcastPoll(poll, msisdn):
     code = get_random_string(5)
     sendtelegram("New Poll! \n Movie - " + str(poll.movie) + " Have you heard of talanku before? - " + str(poll.tlk) + "Service rating" +  str(poll.probability) )
-    sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
+    sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by talanku.com')
             
 
 @app.route('/naloussd', methods=['GET', 'POST'])
@@ -844,7 +845,7 @@ def ticketPoll():
             response = {
                 "USERID": "prestoGh",
                 "MSISDN":msisdn,
-                "MSG":"Thank you for your input. Poll results will go live on Friday! \n Visit talanku.com for more information",
+                "MSG":"Thank you for your input. Poll results are live on talanku.com/polls! \n Visit talanku.com for more information",
                 "MSGTYPE":True
             }
             broadcastPoll(poll, msisdn)
