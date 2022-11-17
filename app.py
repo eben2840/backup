@@ -758,6 +758,12 @@ def polls():
     poll = Movies.query.order_by(Movies.count.desc()).all()
     return render_template('polls.html', poll = poll)
 
+def broadcastPoll(poll, msisdn):
+    code = get_random_string(5)
+    sendtelegram("New Poll! \n Movie - " + str(poll.movie) + " Have you heard of talanku before? - " + str(poll.tlk) + "Service rating" +  str(poll.probability) )
+    sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
+            
+
 @app.route('/naloussd', methods=['GET', 'POST'])
 def ticketPoll():
     print(request.json)
@@ -841,10 +847,7 @@ def ticketPoll():
                 "MSG":"Thank you for your input. Poll results will go live on Friday! \n Visit talanku.com for more information",
                 "MSGTYPE":True
             }
-            code = get_random_string(5)
-            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating" + poll.probability )
-            sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
-            
+            broadcastPoll(poll, msisdn)
             resp = make_response(response)
             return resp
 
@@ -857,9 +860,12 @@ def ticketPoll():
                 "MSG":"Thank you for your input. Poll results will go live on Friday! \n Visit talanku.com for more information",
                 "MSGTYPE":False
             }
-            code = get_random_string(5)
-            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating" + poll.probability )
-            sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
+
+            broadcastPoll(poll, msisdn)
+
+            # code = get_random_string(5)
+            # sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating" + poll.probability )
+            # sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
 
             resp = make_response(response)
             return resp 
