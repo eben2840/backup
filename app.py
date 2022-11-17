@@ -408,7 +408,7 @@ def remove(id):
         print('close error')
     if len(shoppingCart) < 1:
         # flash(f'Please add to your cart', 'warning')
-        return redirect(url_for('index'))
+        return redirect(url_for('index', itemId=id))
     return redirect(url_for('cart'))
 
 @app.route('/updateCart/<int:itemId>')
@@ -841,6 +841,10 @@ def ticketPoll():
                 "MSG":"Thank you for your input. Poll results will go live on Friday! \n Visit talanku.com for more information",
                 "MSGTYPE":True
             }
+            code = get_random_string(5)
+            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating" + poll.probability )
+            sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
+            
             resp = make_response(response)
             return resp
 
@@ -853,6 +857,10 @@ def ticketPoll():
                 "MSG":"Thank you for your input. Poll results will go live on Friday! \n Visit talanku.com for more information",
                 "MSGTYPE":False
             }
+            code = get_random_string(5)
+            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating" + poll.probability )
+            sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
+
             resp = make_response(response)
             return resp 
 
@@ -865,6 +873,8 @@ def ticketPoll():
                 "MSG":"Oops, if you are seeing this, then Nana Kweku Really FuckUp on this USSD",
                 "MSGTYPE":False
             }
+            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating" + poll.probability )
+
             resp = make_response(response)
             return resp
 
