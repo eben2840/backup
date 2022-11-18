@@ -761,7 +761,7 @@ def polls():
 
 def broadcastPoll(poll, msisdn):
     code = get_random_string(5)
-    sendtelegram("New Poll! \n Movie - " + str(poll.movie) + " Have you heard of talanku before? - " + str(poll.tlk) + " \n Service rating" +  str(poll.probability) )
+    sendtelegram("New Poll! \n Movie - " + str(poll.movie) + "Phone: " + poll.phoneNumber +  "\n Have you heard of talanku before? - " + str(poll.tlk) + " \n Service rating - " +  str(poll.probability) )
     sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved. \n Poll results are live at https://talanku.com')
             
 
@@ -784,6 +784,7 @@ def ticketPoll():
         # If a poll has an event.
         if poll.event == None:
             poll.event = "A Night Under The Stars"
+            poll.phoneNumber = msisdn
             db.session.commit()
             response = {
                 "USERID": "prestoGh",
@@ -878,7 +879,7 @@ def ticketPoll():
                 "MSG":"Oops, if you are seeing this, then Nana Kweku Really FuckUp on this USSD",
                 "MSGTYPE":False
             }
-            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating \n" + poll.probability )
+            sendtelegram("New Poll! \n Movie - " + poll.movie + " Have you heard of talanku before? - " + poll.tlk + "Service rating -  \n" + poll.probability )
 
             resp = make_response(response)
             return resp
