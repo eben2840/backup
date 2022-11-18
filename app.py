@@ -761,8 +761,8 @@ def polls():
 
 def broadcastPoll(poll, msisdn):
     code = get_random_string(5)
-    sendtelegram("New Poll! \n Movie - " + str(poll.movie) + " Have you heard of talanku before? - " + str(poll.tlk) + "Service rating" +  str(poll.probability) )
-    sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved.. Your ticket code is: '+ str(code) + ' \n' +   'Powered by talanku.com')
+    sendtelegram("New Poll! \n Movie - " + str(poll.movie) + " Have you heard of talanku before? - " + str(poll.tlk) + " \n Service rating" +  str(poll.probability) )
+    sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved. \n Poll results are live at https://talanku.com')
             
 
 @app.route('/naloussd', methods=['GET', 'POST'])
@@ -870,8 +870,6 @@ def ticketPoll():
 
             resp = make_response(response)
             return resp 
-
-       
 
         else:
             response = {
