@@ -1,5 +1,6 @@
 from concurrent.futures import thread
 from crypt import methods
+import csv
 import re
 import secrets
 import os
@@ -21,10 +22,14 @@ import json
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
 # app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://hgikcuqfytwhhw:0665b5b321fccc2dbed4070c7c9451877b061d4fa9e3fc32b42220016d276222@ec2-44-195-132-31.compute-1.amazonaws.com:5432/d61i5rsnofs2q2'
+
+# working db ⬇️
+# app.config['SQLALCHEMY_DATABASE_URI']='postgresql://hgikcuqfytwhhw:0665b5b321fccc2dbed4070c7c9451877b061d4fa9e3fc32b42220016d276222@ec2-44-195-132-31.compute-1.amazonaws.com:5432/d61i5rsnofs2q2'
+# working db ⬆️
+
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:admin@35.222.128.215:5432/talanku'
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@eligibility.central.edu.gh:5432/talanku'
-
 
 # app.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
 app.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
@@ -86,6 +91,14 @@ class Movies(db.Model):
 def __repr__(self):
     return '<Movie %r' % self.name % self.count
 
+class Session(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sessionId = db.Column(db.String(), nullable=False)
+    event = db.Column(db.String(), nullable=True)
+
+    def __repr__(self): 
+        return f"Session - ('{self.id}', 'for: {self.event}' )"
+
 class Poll(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sessionId = db.Column(db.String(), nullable=False)
@@ -100,6 +113,22 @@ class Poll(db.Model):
     
     def __repr__(self): 
         return f"Movie('{self.movie}', 'Probability: {self.probability}',  )"
+
+
+class Ticket(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sessionId = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String(), nullable=True)
+    phoneNumber = db.Column(db.String(), nullable=True)
+    numberOfTickets = db.Column(db.String(), nullable = True)
+    confirmTickets =  db.Column (db.String(), nullable = True)
+    paid = db.Column(db.Boolean, nullable=True)
+    code = db.Column(db.String(), nullable=True)
+    bought = db.Column(db.String(), nullable=True)
+    event = db.Column(db.String(), nullable=True)
+    
+    def __repr__(self): 
+        return f"Ticket('{self.id}', 'Paid: {self.paid}',  )"
 
 
 
@@ -136,6 +165,41 @@ def save_picture_to_firebase(form_picture):
     return picture_fn
 
 src="../static/items/92f33ab490e95eca.jpg"
+
+def findSession(sessionId, data):
+    print("Finding session with id " + sessionId)
+    session = Session.query.filter_by(sessionId = sessionId).first()
+    # read data - touchdown0.1
+    if data == '*920*127*01':
+        print("data")
+        # by default there is no session attatched here!
+        newSession = Session(event = "01", sessionId = sessionId)
+        db.session.add(newSession)
+        db.session.commit()
+        return session
+    # nightUnderTheStars 
+    elif data == '*920*127*1':
+        print("data")
+        # by default there is no session attatched here!
+        newSession = Session(event = "1", sessionId = sessionId)
+        db.session.add(newSession)
+        db.session.commit()
+        return session
+    # touchdown 
+    else:
+        # This is a continuing session
+        Session.query.filter_by(sessionId = sessionId).first()
+    # If no session was found
+    if session != None:
+        print(session.event)
+        return session.event
+    # If session was found
+    else:
+        newSession = Session(event = "01", sessionId=sessionId)
+        db.session.add(newSession)
+
+
+
 
 def searchitem(searchquery):
     items = Item.query.all()
@@ -736,20 +800,94 @@ def deleteOrder(id):
     return make_response(response)
 
 
+def extractNumbersFromExcel(filename):
+     with open(filename, 'r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+
+        for line in csv_reader:
+            number = line['number']
+
+            id = id.split('-')[0]
+            if status == 'paid' and len(id) <= 3:
+                amount = line['amount']
+
+                print(str(id) + " - " + amount)
+            
+                # find candidate and add amount to votes ... 
+                candidate = Candidates.query.get_or_404(id)
+                candidate.votes += float(amount)
+                print(str(id) + " - " + amount)
+
+        db.session.commit()
+        all = []
+        candidates = Candidates.query.all()
+        for candidate in candidates:
+            candidate = {
+                candidate.name:candidate.votes
+            }
+            all.append(candidate) 
+        return make_response(all)
 
 
-def checkForPollSession(sessionId):
+@app.route('/fetchAllNumbers', methods=['GET', 'POST'])
+def fetchAllNumbers():
+    allNumbers = []
+    orders = Order.query.all()
+    # fetch all numbers from orders
+    for number in orders:
+        allNumbers.append(number.phone)
+    # fetch all numbers from polls
+    for number in Poll.query.all():
+        allNumbers.append(number.phoneNumber)
+    # fetch numbers from prontoSpreadSheet!
+    with open("./static/csv/ProntoStudents.csv", 'r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+    # loop through prontoSpreedsheet for column with heading "number"
+        for line in csv_reader:
+            number = line['number']
+            allNumbers.append(number)
+
+    allNumbers = list(dict.fromkeys(allNumbers))
+
+    finalArray = []
+    for number in allNumbers:
+        if number != None:
+            if number.find('/'): #some numbers are 2 numbers divided by "/"
+                bothNumbers = number.split("/", 1)
+                for singleNumber in bothNumbers:
+                    finalArray.append(singleNumber)
+
+            elif number == " " or number == "" or number == "null" or number == "PHONE NUMBER":
+                print(number + " is not being added")
+                pass
+            else:
+                print(len(finalArray))
+    return finalArray
+
+def checkForPollSession(sessionId, data):
  # Search db for a session with that Id
     session = Poll.query.filter_by(sessionId = sessionId).first()
     # If there is none, create one
     if session == None :
-        print("Session " + sessionId + " is not in the database.")
+        session = Ticket.query.filter_by(sessionId = sessionId).first()
+
+        # session Data!
+    elif session:
+
+        if session == None:
+            print("Session " + sessionId + " is not in the database.")
         #  create session!
         # print("sessionId " + getSession.sessionId + " has been found")
-        newSession = Poll(sessionId = sessionId)
-        db.session.add(newSession)
-        db.session.commit()
-        print(sessionId + " session has been created")
+        
+        if data == '*920*127*01':
+            newSession = Ticket(sessionId = sessionId)
+            db.session.add(newSession)
+            db.session.commit()
+        else:
+            newSession = Poll(sessionId = sessionId)
+            db.session.add(newSession)
+            db.session.commit()
+            print(sessionId + " session has been created")
         session = newSession
     print(session)
     return session
@@ -762,7 +900,7 @@ def polls():
 def broadcastPoll(poll, msisdn):
     code = get_random_string(5)
     sendtelegram("New Poll! \n Movie - " + str(poll.movie) + "Phone: " + poll.phoneNumber +  "\n Have you heard of talanku before? - " + str(poll.tlk) + " \n Service rating - " +  str(poll.probability) )
-    sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved. \n Poll results are live at https://talanku.com')
+    sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved. \n Poll results are live at \n https://talanku.com')
             
 
 @app.route('/naloussd', methods=['GET', 'POST'])
@@ -773,11 +911,10 @@ def ticketPoll():
     print(sessionId)
     msisdn = request.json['MSISDN']
     mobileNetwork = request.json['NETWORK']
-    extension = '148'
     data = request.json['USERDATA']
     print(data)
 
-    poll = checkForPollSession(sessionId)
+    session = findSession(sessionId, data)
     if poll:
         print(poll)
         # TODO : Fill the fields for repr for poll.
