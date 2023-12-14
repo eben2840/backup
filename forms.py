@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationE
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.widgets import TextArea
 from wtforms.fields import MultipleFileField
-from app import User
+from application import User
 
 class RegistrationForm(FlaskForm):
     username = StringField('Name', validators=[DataRequired(),  Regexp(r'^[\w.@+-]+$', message="Username must not include spaces") ,Length(max=10, message="Should be less than 10 characters")])
