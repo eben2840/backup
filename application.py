@@ -17,38 +17,24 @@ from flask_migrate import Migrate
 import requests
 import random
 import string
-
 import json
-<<<<<<< HEAD:app.py
-app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
-=======
+
+
 applicaction = Flask(__name__)
-# applicaction.config['SQLALCHEMY_DATABASE_URI']='postgres://jziidvhglkmwop:847579f0fc359140a5a832725e61db1c3754eb6523c12849558fbfd1bfa8a2cf@ec2-34-236-94-53.compute-1.amazonaws.com:5432/d11sblr8akns3e'
-# applicaction.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
->>>>>>> d884148baea58b97de19dbf0ae1641c27cef40a3:application.py
 
-# working db ⬇️
-# applicaction.config['SQLALCHEMY_DATABASE_URI']='postgresql://hgikcuqfytwhhw:0665b5b321fccc2dbed4070c7c9451877b061d4fa9e3fc32b42220016d276222@ec2-44-195-132-31.compute-1.amazonaws.com:5432/d61i5rsnofs2q2'
-# working db ⬆️
-
-<<<<<<< HEAD:app.py
-# app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:admin@35.222.128.215:5432/talanku'
-=======
-# applicaction.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:admin@35.222.128.215:5432/talanku'
+applicaction.app_context().push()
+# applicaction.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///test.db'
 sandboxDb = "postgresql://postgres:adumatta@database-1.crebgu8kjb7o.eu-north-1.rds.amazonaws.com:5432/talanku"
 applicaction.config['SQLALCHEMY_DATABASE_URI']=sandboxDb
->>>>>>> d884148baea58b97de19dbf0ae1641c27cef40a3:application.py
+# applicaction.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 
-# applicaction.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@eligibility.central.edu.gh:5432/talanku'
 
-# applicaction.config['SQLALCHEMY_DATABASE_URI']='postgres://mdbmveudctmurf:a15c90f420dc141c4190c0572ec9af402b5acb13113a72578fab7d57e49aa4ac@ec2-52-205-3-3.compute-1.amazonaws.com:5432/ddn4isnkf5f11b'
 applicaction.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
 db = SQLAlchemy(applicaction)
 migrate = Migrate(applicaction, db)
 login_manager = LoginManager(applicaction)
+
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -328,10 +314,13 @@ def searchal(searchquery):
 #         text = text.replace(i, j)
 #     return text
 
+
+
 @applicaction.route('/', methods=['POST','GET'])
 def start():
     session['cart'] = []
     return render_template('splash.html')
+
 
 @applicaction.route('/easypill', methods=['POST','GET'])
 def easypill():
