@@ -20,20 +20,20 @@ import string
 import json
 
 
-applicaction = Flask(__name__)
+application = Flask(__name__)
 
-applicaction.app_context().push()
-# applicaction.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///test.db'
+application.app_context().push()
+# application.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///test.db'
 sandboxDb = "postgresql://postgres:adumatta@database-1.crebgu8kjb7o.eu-north-1.rds.amazonaws.com:5432/talanku"
-applicaction.config['SQLALCHEMY_DATABASE_URI']=sandboxDb
-# applicaction.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+application.config['SQLALCHEMY_DATABASE_URI']=sandboxDb
+# application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 
 
-applicaction.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
-db = SQLAlchemy(applicaction)
-migrate = Migrate(applicaction, db)
-login_manager = LoginManager(applicaction)
+application.config['SECRET_KEY'] = '5791628b21sb13ce0c676dfde280ba245'
+db = SQLAlchemy(application)
+migrate = Migrate(application, db)
+login_manager = LoginManager(application)
 
 
 class Item(db.Model):
@@ -47,7 +47,7 @@ class Item(db.Model):
     # user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     vendor = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 def __repr__(self): 
-    return f"Item('{self.name}', '{self.category}', )"
+    return f"Item('{self.name}', '{self.category}',)"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -139,7 +139,7 @@ def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     print(form_picture.filename)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(applicaction.root_path, 'static/items', picture_fn)
+    picture_path = os.path.join(application.root_path, 'static/items', picture_fn)
 
     output_size = (500, 500)
     i = Image.open(form_picture)
@@ -154,7 +154,7 @@ def save_picture_to_firebase(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     print(form_picture.filename)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(applicaction.root_path, 'static/items', picture_fn)
+    picture_path = os.path.join(application.root_path, 'static/items', picture_fn)
 
     output_size = (500, 500)
     i = Image.open(form_picture)
@@ -268,7 +268,7 @@ def searchitem(searchquery):
 
 
 
-@applicaction.route('/search', methods=['POST'])
+@application.route('/search', methods=['POST'])
 def search():
     piw = request.args.get('q')
     print(piw)
@@ -282,23 +282,23 @@ def search():
     return render_template('results.html', items = items, search = 'iPhone')
 
 
-@applicaction.route('/admin')
+@application.route('/admin')
 def admin():
     return render_template('admin.html')
 
-@applicaction.route('/shop<string:userid>')
+@application.route('/shop<string:userid>')
 def shop(userid):
 
     print(userid)
     return render_template('shop.html')
 
-@applicaction.route('/allitems')
+@application.route('/allitems')
 def allitems():
     items = Item.query.all()
     return render_template('allitems.html', items = items)
 
 
-@applicaction.route("/searchal/<string:searchquery>", methods=['POST','GET'])
+@application.route("/searchal/<string:searchquery>", methods=['POST','GET'])
 def searchal(searchquery):
     searchResultsArray = []
     searchresults = (searchitem(searchquery))
@@ -316,13 +316,13 @@ def searchal(searchquery):
 
 
 
-@applicaction.route('/', methods=['POST','GET'])
+@application.route('/', methods=['POST','GET'])
 def start():
     session['cart'] = []
     return render_template('splash.html')
 
 
-@applicaction.route('/easypill', methods=['POST','GET'])
+@application.route('/easypill', methods=['POST','GET'])
 def easypill():
     api_key = "aniXLCfDJ2S0F1joBHuM0FcmH" #Remember to put your own API Key here
     phone = "0204716768" #SMS recepient"s phone number
@@ -335,7 +335,7 @@ def easypill():
     return 'Easy Pill Webhooks URL'
 
 
-@applicaction.route("/voip/<string:params>", methods=['POST','GET'])
+@application.route("/voip/<string:params>", methods=['POST','GET'])
 def voip(params):
     print(params)
     with open('readme.txt', 'w') as f:
@@ -346,7 +346,7 @@ def voip(params):
 #     print ("add to cart thing")
 #     return redirect(url_for('index'))
 
-@applicaction.route("/hello/<string:itemId>", methods=['POST','GET'])
+@application.route("/hello/<string:itemId>", methods=['POST','GET'])
 def index(itemId):
     if itemId != 0: 
         cart = session['cart']
@@ -361,7 +361,7 @@ def index(itemId):
         return redirect(url_for('searchal', searchquery = searchquery)) 
     return render_template('index.html', items = items, home=home, form=form, cart=session['cart'])
 
-@applicaction.route('/hello', methods=['POST','GET'])
+@application.route('/hello', methods=['POST','GET'])
 def home():
     form = Search()
     session['cart'] = []
@@ -377,11 +377,12 @@ def home():
         return redirect(url_for('searchal', searchquery = searchquery)) 
     return render_template('index.html', items = items, home=home, form=form, cart=shoppingCart, initial=True)
 
-@applicaction.route('/testing')
+
+@application.route('/testing')
 def testing():
     return render_template('grid.html')
 
-@applicaction.route('/delivery', methods=['POST','GET'])
+@application.route('/delivery', methods=['POST','GET'])
 def delivery():
     form = DeliveryForm()
     if form.validate_on_submit():
@@ -398,7 +399,7 @@ def delivery():
         return redirect(url_for('reciept', orderId=newOrder.id))
     return render_template('delivery.html',form=form)
 
-@applicaction.route('/cart', methods=['POST','GET'])
+@application.route('/cart', methods=['POST','GET'])
 def cart():
     shoppingCart = session['cart']
     print(shoppingCart)
@@ -460,7 +461,7 @@ def ticketMe(phone, price):
         sendRancardMessage(phone,'Congratulations! Please present this code at the event to claim your ' + validFor + ' for our movie night on the 26th November. Your ticket code is: '+ str(code) + ' \n' +   'Powered by PrestoTickets')
     return code
 
-@applicaction.route('/remove/<int:id>')
+@application.route('/remove/<int:id>')
 def remove(id):
     print(id)
     shoppingCart = session['cart']
@@ -477,7 +478,7 @@ def remove(id):
         return redirect(url_for('index', itemId=id))
     return redirect(url_for('cart'))
 
-@applicaction.route('/updateCart/<int:itemId>')
+@application.route('/updateCart/<int:itemId>')
 def updateCart(itemId):
     print(itemId)
     shoppingCart = session['cart']
@@ -495,7 +496,7 @@ def updateCart(itemId):
     flash(f' '+addedItem.name+ ' has been added to the cart.','success')
     return redirect(url_for('index', itemId=itemId))
 
-@applicaction.route('/preview/<int:itemid>')
+@application.route('/preview/<int:itemid>')
 def preview(itemid):
     print(session['cart'])
     item = Item.query.filter_by(id=itemid).first()
@@ -503,13 +504,13 @@ def preview(itemid):
     vendorname = vendor.username
     return render_template('preview.html', item=item, vendorname=vendorname, vendor=vendor)
 
-@applicaction.route('/show/<string:category>')
+@application.route('/show/<string:category>')
 def show(category):
     items = Item.query.filter_by(category = category).all()
     print(items)
     return render_template('show.html', items=items, category=category)
 
-@applicaction.route('/additem', methods=['POST','GET'])
+@application.route('/additem', methods=['POST','GET'])
 def additem():
     form = ItemForm()
     if form.validate_on_submit():
@@ -540,25 +541,25 @@ def additem():
     return render_template('additemcopy.html', form=form)
 
 def sendtelegram(params):
-    url = "https://api.telegram.org/bot5697243522:AAEeALOhEg7MxRN7rVM1MXnUKWRVgm9eTyg/sendMessage?chat_id=-1001858967717&text=" + urllib.parse.quote(params)
+    url = "https://api.telegram.org/bot5876869228:AAFk644pEKRBnEhZ6jbG2nXRlj4fsyZEYgg/sendMessage?chat_id=-4078766305&text=" + urllib.parse.quote(params)
     content = urllib.request.urlopen(url).read()
     print(content)
     return content
 
-@applicaction.route('/test', methods=['POST','GET'])
+@application.route('/test', methods=['POST','GET'])
 def test():
     return render_template('asdf.html')
 
-# @applicaction.route('/myitems')
+# @application.route('/myitems')
 # def myitems():
 
-@applicaction.route('/reciept/<int:orderId>', methods=['POST','GET'])
+@application.route('/reciept/<int:orderId>', methods=['POST','GET'])
 def reciept(orderId):
     session['cart'] = []
     order = Order.query.get_or_404(orderId)
     return render_template('reciept.html', order=order)  
 
-@applicaction.route('/register', methods=['POST','GET'])
+@application.route('/register', methods=['POST','GET'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -581,21 +582,21 @@ def register():
         flash (f'There was a problem', 'danger')
     return render_template('register.html',  form=form)
 
-@applicaction.route('/account')
+@application.route('/account')
 def account():
     user = current_user
     return render_template('account.html', user=user)
 
-@applicaction.route('/allusers')
+@application.route('/allusers')
 def allusers():
     allusers = User.query.all()
     return render_template('allusers.html', allusers=allusers)
 
-@applicaction.route('/categories')
+@application.route('/categories')
 def categories():
     return render_template('cat.html')
 
-@applicaction.route('/login',methods=['POST','GET'])
+@application.route('/login',methods=['POST','GET'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -611,30 +612,30 @@ def login():
             flash(f'Incorrect details, please try again', 'danger')
     return render_template('login.html', form=form)
 
-@applicaction.route('/bookmarks')
+@application.route('/bookmarks')
 def bookmarks():
     return 'Done'
 
-@applicaction.route('/logout')
+@application.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@applicaction.route('/myitems')
+@application.route('/myitems')
 def myitems():
     items = Item.query.filter_by(vendor = current_user.id).all()
     print(items)
     user = current_user
     return render_template('adminitems.html', items = items, user=user)
 
-@applicaction.route('/<int:phone>/<int:itemId>')
+@application.route('/<int:phone>/<int:itemId>')
 def item(phone, itemId):
     user = User.query.filter_by(phone = phone).first()
     item = Item.query.filter_by(id=itemId).first()
     return 'hmmmm'
 
 
-@applicaction.route('/update/<int:itemid>', methods=['POST','GET'])
+@application.route('/update/<int:itemid>', methods=['POST','GET'])
 def update(itemid):
     form = ItemForm()
     item = Item.query.filter_by(id = itemid).first()
@@ -668,13 +669,13 @@ def update(itemid):
                  
     return render_template('additemcopy.html', form=form, item=item, update=update)
 
-@applicaction.route('/delete/<int:itemid>', methods=['POST','GET'])
+@application.route('/delete/<int:itemid>', methods=['POST','GET'])
 def delete(itemid):
     Item.query.filter_by(id = itemid).delete()
     db.session.commit()
     return redirect(url_for('myitems'))
 
-@applicaction.route('/admin/delete/<string:itemid>', methods=['POST','GET'])
+@application.route('/admin/delete/<string:itemid>', methods=['POST','GET'])
 def admindelete(itemid):
     Item.query.filter_by(id = itemid).delete()
     db.session.commit()
@@ -682,11 +683,11 @@ def admindelete(itemid):
 
 
 
-@applicaction.route('/dashboard')
+@application.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
 
-# @applicaction.route('/sendmessage')
+# @application.route('/sendmessage')
 def sendmessage(phone, message):
     api_key = "aniXLCfDJ2S0F1joBHuM0FcmH" #Remember to put your own API Key here
     phone = phone #SMS recepient"s phone number
@@ -704,18 +705,18 @@ def send_sms(api_key,phone,message,sender_id):
     print (url)
 
 
-@applicaction.route('/verify')
+@application.route('/verify')
 def verify():
     return render_template('verify.html')
 
-@applicaction.route('/users')
+@application.route('/users')
 def users():
     users = User.query.all()
     return render_template("users.html", users = users)
 
 
 # Request Body
-@applicaction.route('/orders', methods=['GET', 'POST'])
+@application.route('/orders', methods=['GET', 'POST'])
 
 # Function
 def orders():
@@ -746,7 +747,7 @@ def orders():
     # Return the response. Which is recieved by the client.
     return response
 
-@applicaction.route('/neworder', methods=['GET', 'POST'])
+@application.route('/neworder', methods=['GET', 'POST'])
 def neworder():
     print(request.json["name"])
     print(request.json["price"])
@@ -772,7 +773,7 @@ def neworder():
     response = make_response(newResponse)
     return response
 
-@applicaction.route('/getorder/<int:id>', methods=['GET', 'POST'])
+@application.route('/getorder/<int:id>', methods=['GET', 'POST'])
 def getorder(id):
     order = Order.query.get_or_404(id)
     print(order)
@@ -786,7 +787,7 @@ def getorder(id):
     response = make_response(jsonOrder)
     return response
 
-@applicaction.route('/deleteOrder/<int:id>', methods=['GET', 'POST', 'DELETE'])
+@application.route('/deleteOrder/<int:id>', methods=['GET', 'POST', 'DELETE'])
 def deleteOrder(id):
 
     try:
@@ -830,7 +831,7 @@ def extractNumbersFromExcel(filename):
         return make_response(all)
 
 
-@applicaction.route('/fetchAllNumbers', methods=['GET', 'POST'])
+@application.route('/fetchAllNumbers', methods=['GET', 'POST'])
 def fetchAllNumbers():
     allNumbers = []
     orders = Order.query.all()
@@ -893,7 +894,7 @@ def checkForPollSession(sessionId, data):
     print(session)
     return session
 
-@applicaction.route('/polls', methods=['GET', 'POST'])
+@application.route('/polls', methods=['GET', 'POST'])
 def polls():
     poll = Movies.query.order_by(Movies.count.desc()).all()
     return render_template('polls.html', poll = poll)
@@ -904,7 +905,7 @@ def broadcastPoll(poll, msisdn):
     sendRancardMessage(msisdn,'Congratulations! your ' + poll.movie + ' recommendation for our movie night on the 26th November has been recieved. \n Poll results are live at \n https://talanku.com')
             
 
-@applicaction.route('/naloussd', methods=['GET', 'POST'])
+@application.route('/naloussd', methods=['GET', 'POST'])
 def ticketPoll():
     print(request.json)
     sessionId = request.json['SESSIONID']
@@ -1024,4 +1025,4 @@ def ticketPoll():
 
 
 if __name__ == '__main__':
-    applicaction.run(host='0.0.0.0', debug=True)
+    application.run(host='0.0.0.0', debug=True)
